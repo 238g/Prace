@@ -1,17 +1,16 @@
 BasicGame={};
 BasicGame.Boot=function(){};
 BasicGame.Boot.prototype={
-	init:function(){this.M.BootInit(!1,{
+	init:function(){this.M.BootInit(!0,{
 		GAME_TITLE:document.title,
-		GAME_TITLE_EN:'KMNZ-Pazzle',
+		GAME_TITLE_EN:'HarukasuGame',
 		MAIN_COLOR:'#ffffff',
 		MAIN_TINT:0xffffff,
 		MAIN_TEXT_COLOR:'#000000',
 		MAIN_STROKE_COLOR:'#000000',
 		WHITE_COLOR:'#ffffff',
-		PIECE_ONE:320/3,//TODO 320
 		curLang:'jp',
-		// curLang:(getQuery('lang')=='en')?'en':'jp',
+		// curLang:getQuery('lang')=='en'?'en':'jp',
 		endTut:!1,
 	})},
 	preload:function(){var p='https://238g.github.io/Parace/images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
@@ -27,8 +26,8 @@ BasicGame.Boot.prototype={
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
-				/*
 				Start:'スタート',
+				/*
 				Back:'もどる',
 				Collection:'コレクション',
 				Close:'とじる',
@@ -72,16 +71,12 @@ BasicGame.Preloader.prototype={
 		this.load.atlasJSONHash('VolumeIcon',p+'images/public/VolumeIcon/VolumeIconW.png',p+'images/public/VolumeIcon/VolumeIconW.json');
 		var a={
 			'PubLogo':p+'images/public/logo/logo.png',
-			'WP':p+'images/TruckGoddess/WhitePaper.jpg',
-			'TWP':p+'images/FOckingGlasses/TranslucentWhitePaper.png',
+			'wp':'images/odanoharukasu/wp.jpg',
+			// 'TWP':p+'images/FOckingGlasses/TranslucentWhitePaper.png',
 			// '70TWP':p+'images/vtuber_game_1/70TranslucentWhitePaper.png',
 		};
 		for(var k in a)this.load.image(k,a[k]);
-		this.loadPicture();
 		this.loadAudio();
-	},
-	loadPicture:function(){
-		this.load.spritesheet('todo_1','images/tiatia/Inu.png',BasicGame.PIECE_ONE,BasicGame.PIECE_ONE);
 	},
 	loadAudio:function(){
 		var p='https://238g.github.io/Parace/';

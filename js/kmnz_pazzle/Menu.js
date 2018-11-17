@@ -2,13 +2,17 @@ BasicGame.Title=function(){};
 BasicGame.Title.prototype={
 	init:function(){
 		this.inputEnabled=!1;
-		this.curLang=this.M.gGlb('curLang');
-		this.Words=this.M.gGlb('Words');
-		this.curWords=this.Words[this.curLang];
+		// this.curLang=this.M.gGlb('curLang');
+		// this.Words=this.M.gGlb('Words');
+		// this.curWords=this.Words[this.curLang];
 		// Obj
 		this.Tween={};
 	},
 	create:function(){
+
+
+		console.log(3333333333);
+		return;
 		this.time.events.removeAll();
 		this.stage.backgroundColor=BasicGame.WHITE_COLOR;
 		// this.M.SE.playBGM('TitleBGM',{volume:1});
