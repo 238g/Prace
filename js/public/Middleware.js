@@ -209,61 +209,61 @@ Middleware.prototype.SpriteManager.prototype={
 };
 Middleware.prototype.TweenManager=function(g,m){this.game=g;this.M=m;};
 Middleware.prototype.TweenManager.prototype={
-	// [duration,delay]
-	beatA:function(t,op){op=op||{};return this.M.gScn().add.tween(t.scale).to({x:'+.1',y:'+.1'},op.duration, Phaser.Easing.Sinusoidal.Out,!1,op.delay,-1,!0)},
-	// xy[,duration,delay]
-	pointingA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Sinusoidal.Out,!1,op.delay,-1,!0)},
-	// [duration,scale,delay]
+	// [duration,start,delay]
+	beatA:function(t,op){op=op||{};return this.M.gScn().add.tween(t.scale).to({x:'+.1',y:'+.1'},op.duration,Phaser.Easing.Sinusoidal.Out,op.start||!1,op.delay,-1,!0)},
+	// xy[,duration,start,delay]
+	pointingA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Sinusoidal.Out,op.start||!1,op.delay,-1,!0)},
+	// [duration,scale,start,delay]
 	popUpA:function(t,op){
 		op=op||{};
 		op.scale=op.scale||{};
-		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,Phaser.Easing.Sinusoidal.Out,!1,op.delay);
+		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,Phaser.Easing.Sinusoidal.Out,op.start||!1,op.delay);
 	},
-	// [duration,scale,delay]
+	// [duration,scale,start,delay]
 	popUpB:function(t,op){
 		op=op||{};
 		op.scale=op.scale||{};
-		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,Phaser.Easing.Back.Out,!1,op.delay);
+		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,Phaser.Easing.Back.Out,op.start||!1,op.delay);
 	},
-	// easing[,duration,scale,delay]
+	// easing[,duration,scale,start,delay]
 	popUpX:function(t,op){
 		op=op||{};
 		op.scale=op.scale||{};
-		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,op.easing,!1,op.delay);
+		return this.M.gScn().add.tween(t.scale).to({x:(op.scale.x||1),y:(op.scale.y||1)},op.duration,op.easing,op.start||!1,op.delay);
 	},
-	// xy[,duration,delay]
-	moveA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Back.Out,!1,op.delay)},
-	// xy[,duration,delay]
-	moveB:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Linear.None,!1,op.delay)},
-	// xy[,duration,delay] // loop yoyo
-	moveC:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Cubic.Out,!1,op.delay,-1,!0)},
-	// xy[,duration,delay]
-	moveD:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Bounce.Out,!1,op.delay)},
-	// xy,easing[,duration,delay]
-	moveX:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,op.easing,!1,op.delay)},
-	// [duration,delay]
-	fadeInA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:op.alpha||1}, op.duration,Phaser.Easing.Linear.None,!1,op.delay)},
-	// [duration,delay]
-	fadeOutA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:0},op.duration,Phaser.Easing.Linear.None,!1,op.delay)},
-	// [alpha,duration,delay,yoyo,repeat]
+	// xy[,duration,start,delay]
+	moveA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Back.Out,op.start||!1,op.delay)},
+	// xy[,duration,start,delay]
+	moveB:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Linear.None,op.start||!1,op.delay)},
+	// xy[,duration,start,delay] // loop yoyo
+	moveC:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Cubic.Out,op.start||!1,op.delay,-1,!0)},
+	// xy[,duration,start,delay]
+	moveD:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,Phaser.Easing.Bounce.Out,op.start||!1,op.delay)},
+	// xy,easing[,duration,start,delay]
+	moveX:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to(op.xy,op.duration,op.easing,op.start||!1,op.delay)},
+	// [duration,start,delay]
+	fadeInA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:op.alpha||1}, op.duration,Phaser.Easing.Linear.None,op.start||!1,op.delay)},
+	// [duration,start,delay]
+	fadeOutA:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:0},op.duration,Phaser.Easing.Linear.None,op.start||!1,op.delay)},
+	// [alpha,duration,start,delay,yoyo,repeat]
 	fadeOutB:function(t,op){
 		op=op||{};
-		var t=this.M.gScn().add.tween(t).to({alpha:op.alpha||0},op.duration,Phaser.Easing.Exponential.Out,!1,op.delay);
+		var t=this.M.gScn().add.tween(t).to({alpha:op.alpha||0},op.duration,Phaser.Easing.Exponential.Out,op.start||!1,op.delay);
 		if(op.yoyo)t.yoyo(!0);
 		if(op.repeat)t.repeat(op.repeat);
 		return t;
 	},
-	// easing[,duration,delay]
-	fadeOutX:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:0},op.duration,op.easing,!1,op.delay)},
+	// easing[,duration,start,delay]
+	fadeOutX:function(t,op){op=op||{};return this.M.gScn().add.tween(t).to({alpha:0},op.duration,op.easing,op.start||!1,op.delay)},
 	// [durations,delay]
 	stressA:function(t,op){
 		op=op||{};
 		var sc=this.M.gScn();
 		durations=op.durations||[200,100];
 		delay=op.delay||500;
-		var startTween=sc.add.tween(t.scale).to({x:'+.1'},durations[0],Phaser.Easing.Linear.None,false,delay);
+		var startTween=sc.add.tween(t.scale).to({x:'+.1'},durations[0],Phaser.Easing.Linear.None,!1,delay);
 		t.endTween=sc.add.tween(t.scale).to({x:'-.1'},durations[0],Phaser.Easing.Linear.None);
-		var yoyoTween=sc.add.tween(t).to({angle:5},durations[1],Phaser.Easing.Linear.None,false,0,2,true);
+		var yoyoTween=sc.add.tween(t).to({angle:5},durations[1],Phaser.Easing.Linear.None,!1,0,2,!0);
 		startTween.chain(yoyoTween);
 		startTween.onComplete.add(function(){this.angle=-5;},t);
 		yoyoTween.onComplete.add(function(){this.angle=0;t.endTween.start()},t);
