@@ -3,7 +3,7 @@ BasicGame.Boot=function(){};
 BasicGame.Boot.prototype={
 	init:function(){this.M.BootInit(!0,{
 		GAME_TITLE:document.title,
-		GAME_TITLE_EN:'HarukasuGame',
+		GAME_TITLE_EN:'DWU-Game',
 		MAIN_COLOR:'#ffffff',
 		MAIN_TINT:0xffffff,
 		MAIN_TEXT_COLOR:'#000000',
@@ -12,28 +12,52 @@ BasicGame.Boot.prototype={
 		curLang:'jp',
 		// curLang:getQuery('lang')=='en'?'en':'jp',
 		endTut:!1,
-		yt:'https://www.youtube.com/channel/UC2ZVDmnoZAOdLt7kI7Uaqog',
-		tw:'https://twitter.com/Haruto_gamebu',
+		curStage:1,
+		Words:null,
+		StageInfo:null,
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
 		this.M.G.Words=this.genWords();
+		this.M.G.StageInfo=this.genStage();
 		this.M.NextScene('Preloader');
 	},
+	genStage:function(){
+		return {
+			1:{name:'',
+				itemRespawnInterval:800,obstacleRespawnInterval:1800,
+			},
+			2:{
+
+			},
+			3:{
+
+			},
+			4:{
+
+			},
+			5:{
+
+			},
+		};
+	},
 	genWords:function(){
-		var touchJP=this.M.G.TOUCH_WORD;
+		////// var touchJP=this.M.G.TOUCH_WORD;
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
+				//TODO
 				Start:'スタート',
-				HowTo:'あなたもわたしもポッキー！\nタイミングよく画面を'+touchJP+'して\nハルカスを叩きつけろ！\n指先は関係ない。',
-				ScoreBack:'ハルカス',
+				OtherGames:'他のゲーム',
+				/*
+				HowTo:'',
+				ScoreBack:'aaaaaa',
 				Again:'もう一度！',
 				TwBtn:'結果をツイート',
 				Back:'もどる',
-				OtherGames:'他のゲーム',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
-				TwHT:'ハルカスゲーム',
+				TwHT:'DWUゲーム',
+				*/
 			},
 			en:{
 			},
@@ -59,6 +83,10 @@ BasicGame.Preloader.prototype={
 			'PubLogo':p+'images/public/logo/logo.png',
 			'wp':'images/odanoharukasu/wp.jpg',
 			'twp':'images/odanoharukasu/twp70.png',
+			'dwu1':'images/dwu/dwu1.png',
+
+
+			/*
 			'gauge':'images/odanoharukasu/gauge.jpg',
 			'bg1':'images/odanoharukasu/bg1.jpg',
 			'bg2':'images/odanoharukasu/bg2.png',
@@ -68,6 +96,7 @@ BasicGame.Preloader.prototype={
 			'nobuhime2':'images/odanoharukasu/nobuhime2.png',
 			'bar':'images/odanoharukasu/bar.png',
 			'title':'images/odanoharukasu/title.png',
+			*/
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadAudio();
@@ -75,6 +104,7 @@ BasicGame.Preloader.prototype={
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
 		var s={
+			/*
 			TitleBGM:p+'sounds/BGM/CopyCat',
 			PlayBGM:p+'sounds/BGM/GreatBoss',
 			OnBtn:p+'sounds/SE/LabJP/Btn/decision9',
@@ -82,6 +112,7 @@ BasicGame.Preloader.prototype={
 			Back:p+'sounds/SE/LabJP/Btn/decision6',
 			StopBar:p+'sounds/SE/LabJP/Performance/Anime/shakin2',
 			Last:'sounds/odanoharukasu/last',
+			*/
 		};
 		for(var k in s){
 			var f=s[k];
@@ -91,6 +122,7 @@ BasicGame.Preloader.prototype={
 	},
 	loadComplete:function(){
 		// this.stage.disableVisibilityChange=!1;
+		this.input.maxPointers=2;
 		this.game.device.desktop&&(document.body.style.cursor='pointer');
 		this.M.S.txt(this.world.centerX,this.world.height*.85,this.M.G.TOUCH_WORD+'してスタート\n'+this.M.G.TOUCH_WORD_EN+' TO PLAY',this.M.S.styl(25));
 		this.M.SE.setSounds(this.sounds);

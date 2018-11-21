@@ -1,9 +1,9 @@
 BasicGame={};
 BasicGame.Boot=function(){};
 BasicGame.Boot.prototype={
-	init:function(){this.M.BootInit(!0,{
+	init:function(){this.M.BootInit(!1,{
 		GAME_TITLE:document.title,
-		GAME_TITLE_EN:'HarukasuGame',
+		GAME_TITLE_EN:'kkkkkkkkkkkkkkkkk',//TODO
 		MAIN_COLOR:'#ffffff',
 		MAIN_TINT:0xffffff,
 		MAIN_TEXT_COLOR:'#000000',
@@ -12,8 +12,6 @@ BasicGame.Boot.prototype={
 		curLang:'jp',
 		// curLang:getQuery('lang')=='en'?'en':'jp',
 		endTut:!1,
-		yt:'https://www.youtube.com/channel/UC2ZVDmnoZAOdLt7kI7Uaqog',
-		tw:'https://twitter.com/Haruto_gamebu',
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
@@ -25,15 +23,18 @@ BasicGame.Boot.prototype={
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
+				//TODO
 				Start:'スタート',
+				OtherGames:'他のゲーム',
+				/*
 				HowTo:'あなたもわたしもポッキー！\nタイミングよく画面を'+touchJP+'して\nハルカスを叩きつけろ！\n指先は関係ない。',
 				ScoreBack:'ハルカス',
 				Again:'もう一度！',
 				TwBtn:'結果をツイート',
 				Back:'もどる',
-				OtherGames:'他のゲーム',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'ハルカスゲーム',
+				*/
 			},
 			en:{
 			},
@@ -57,6 +58,9 @@ BasicGame.Preloader.prototype={
 		this.load.atlasJSONHash('VolumeIcon',p+'images/public/VolumeIcon/VolumeIconW.png',p+'images/public/VolumeIcon/VolumeIconW.json');
 		var a={
 			'PubLogo':p+'images/public/logo/logo.png',
+			// TODO make wp
+
+			/*
 			'wp':'images/odanoharukasu/wp.jpg',
 			'twp':'images/odanoharukasu/twp70.png',
 			'gauge':'images/odanoharukasu/gauge.jpg',
@@ -68,6 +72,7 @@ BasicGame.Preloader.prototype={
 			'nobuhime2':'images/odanoharukasu/nobuhime2.png',
 			'bar':'images/odanoharukasu/bar.png',
 			'title':'images/odanoharukasu/title.png',
+			*/
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadAudio();
@@ -75,6 +80,7 @@ BasicGame.Preloader.prototype={
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
 		var s={
+			/*
 			TitleBGM:p+'sounds/BGM/CopyCat',
 			PlayBGM:p+'sounds/BGM/GreatBoss',
 			OnBtn:p+'sounds/SE/LabJP/Btn/decision9',
@@ -82,6 +88,7 @@ BasicGame.Preloader.prototype={
 			Back:p+'sounds/SE/LabJP/Btn/decision6',
 			StopBar:p+'sounds/SE/LabJP/Performance/Anime/shakin2',
 			Last:'sounds/odanoharukasu/last',
+			*/
 		};
 		for(var k in s){
 			var f=s[k];
