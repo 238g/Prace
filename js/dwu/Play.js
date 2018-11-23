@@ -44,7 +44,7 @@ BasicGame.Play.prototype={
 			this.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(this.clear,this);
 		}
 	},
-	render:function(){
+	renderT:function(){
 		this.game.debug.body(this.Player);
 		this.Items.forEachAlive(function(c){this.game.debug.body(c)},this);
 		this.Obstacles.forEachAlive(function(c){this.game.debug.body(c)},this);
