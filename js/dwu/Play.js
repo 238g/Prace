@@ -96,7 +96,7 @@ BasicGame.Play.prototype={
 			c.outOfBoundsKill=!0;
 			c.anchor.setTo(.5);
 			c.smoothed=!1;
-			c.body.setSize(c.width*.8,c.height*.8,c.width*.1,c.height*.1);
+			c.body.setSize(c.width*.7,c.height*.7,c.width*.15,c.height*.15);
 		},this);
 	},
 	respawnObstacle:function(){
@@ -130,7 +130,7 @@ BasicGame.Play.prototype={
 			c.outOfBoundsKill=!0;
 			c.anchor.setTo(.5);
 			c.smoothed=!1;
-			c.body.setSize(c.width*.8,c.height*.8,c.width*.1,c.height*.1);
+			// c.body.setSize(c.width*.8,c.height*.8,c.width*.1,c.height*.1);
 		},this);
 	},
 	respawnItem:function(){
