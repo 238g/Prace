@@ -10,54 +10,62 @@ BasicGame.Boot.prototype={
 		MAIN_STROKE_COLOR:'#000000',
 		WHITE_COLOR:'#ffffff',
 		curLang:'jp',
-		// curLang:getQuery('lang')=='en'?'en':'jp',
+		////// curLang:getQuery('lang')=='en'?'en':'jp',
 		endTut:!1,
 		curStage:1,
 		Words:null,
 		StageInfo:null,
+		tw:'https://twitter.com/D_W_Underground',
+		yt:'https://www.youtube.com/channel/UCSgheR9xOIcQjlkeXqIofLQ',
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
 		this.M.G.Words=this.genWords();
-		this.M.G.StageInfo=this.genStage();
+		this.M.G.StageInfo=this.genStageInfo();
 		this.M.NextScene('Preloader');
 	},
-	genStage:function(){
+	genStageInfo:function(){
 		return {
-			1:{name:'',
-				itemRespawnInterval:800,obstacleRespawnInterval:1800,
+			1:{name:'浅瀬',
+				itemRespawnInterval:800,obstacleRespawnInterval:2500,
+				targetScore:25,itemScale:1,obstacleScale:1,endless:!1,
 			},
-			2:{
-
+			2:{name:'ハート⚫ンダーブレード',
+				itemRespawnInterval:900,obstacleRespawnInterval:2E3,
+				targetScore:30,itemScale:.8,obstacleScale:1,endless:!1,
 			},
-			3:{
-
+			3:{name:'貯水タンク',
+				itemRespawnInterval:1000,obstacleRespawnInterval:1500,
+				targetScore:40,itemScale:.6,obstacleScale:1,endless:!1,
 			},
-			4:{
-
+			4:{name:'漫⚫村',
+				itemRespawnInterval:1200,obstacleRespawnInterval:800,
+				targetScore:50,itemScale:.5,obstacleScale:1.2,endless:!1,
 			},
-			5:{
-
+			5:{name:'深層WEB',
+				itemRespawnInterval:800,obstacleRespawnInterval:1500,
+				targetScore:666,itemScale:1,obstacleScale:1,endless:!0,
 			},
 		};
 	},
 	genWords:function(){
-		////// var touchJP=this.M.G.TOUCH_WORD;
+		var touchJP=this.M.G.TOUCH_WORD;
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
-				//TODO
 				Start:'スタート',
 				OtherGames:'他のゲーム',
-				/*
-				HowTo:'',
-				ScoreBack:'aaaaaa',
-				Again:'もう一度！',
+				Score:'獲得:',
+				Target:'目標:',
+				NoneTarget:'深層',
+				Again:'もう一度',
+				HowTo:'あそびかた\n\nゆっくりしていってねを集めよう！\nオタクくんはさけましょう。\n画面の左を'+touchJP+'すると小さく。\n右は大きく。',
 				TwBtn:'結果をツイート',
 				Back:'もどる',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'DWUゲーム',
-				*/
+				GameOver:'ゲームオーバー',
+				Clear:'クリア',
 			},
 			en:{
 			},
@@ -83,20 +91,32 @@ BasicGame.Preloader.prototype={
 			'PubLogo':p+'images/public/logo/logo.png',
 			'wp':'images/odanoharukasu/wp.jpg',
 			'twp':'images/odanoharukasu/twp70.png',
+			'title':'images/dwu/title.png',
 			'dwu1':'images/dwu/dwu1.png',
-
-
-			/*
-			'gauge':'images/odanoharukasu/gauge.jpg',
-			'bg1':'images/odanoharukasu/bg1.jpg',
-			'bg2':'images/odanoharukasu/bg2.png',
-			'haruto1':'images/odanoharukasu/haruto1.png',
-			'haruto2':'images/odanoharukasu/haruto2.png',
-			'nobuhime1':'images/odanoharukasu/nobuhime1.png',
-			'nobuhime2':'images/odanoharukasu/nobuhime2.png',
-			'bar':'images/odanoharukasu/bar.png',
-			'title':'images/odanoharukasu/title.png',
-			*/
+			'dwu2':'images/dwu/dwu2.png',
+			'dwu3':'images/dwu/dwu3.png',
+			'goal1':'images/dwu/goal1.jpg',
+			'goal2':'images/dwu/goal2.jpg',
+			'goal3':'images/dwu/goal3.jpg',
+			'goal4':'images/dwu/goal4.jpg',
+			'goal5':'images/dwu/goal5.jpg',
+			'bg1':'images/dwu/bg1.jpg',
+			'bg2':'images/dwu/bg2.jpg',
+			'bg3':'images/dwu/bg3.jpg',
+			'bg4':'images/dwu/bg4.jpg',
+			'bg5':'images/dwu/bg5.jpg',
+			'bg6':'images/dwu/bg6.jpg',
+			'bg7':'images/dwu/bg7.jpg',
+			'bg8':'images/dwu/bg8.jpg',
+			'bg9':'images/dwu/bg9.jpg',
+			'eff':'images/dwu/eff.png',
+			'otaku1':p+'images/UMI/Bullets/FujoshiA.png',
+			'otaku2':p+'images/UMI/Bullets/FujoshiB.png',
+			'otaku3':p+'images/UMI/Bullets/OtakuA.png',
+			'otaku4':p+'images/UMI/Bullets/OtakuB.png',
+			'otaku5':p+'images/UMI/Bullets/OtakuC.png',
+			'otaku6':p+'images/UMI/Bullets/OtakuD.png',
+			'otaku7':p+'images/UMI/Enemies/You.png',
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadAudio();
@@ -104,15 +124,15 @@ BasicGame.Preloader.prototype={
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
 		var s={
-			/*
-			TitleBGM:p+'sounds/BGM/CopyCat',
-			PlayBGM:p+'sounds/BGM/GreatBoss',
+			TitleBGM:p+'sounds/BGM/P/PerituneMaterial_Snowy_Day2',
+			PlayBGM:p+'sounds/BGM/P/picopiconostalgie',
+			OnStart:p+'sounds/SE/LabJP/Btn/decision8',
 			OnBtn:p+'sounds/SE/LabJP/Btn/decision9',
-			OnStart:p+'sounds/SE/LabJP/Btn/decision4',
 			Back:p+'sounds/SE/LabJP/Btn/decision6',
-			StopBar:p+'sounds/SE/LabJP/Performance/Anime/shakin2',
-			Last:'sounds/odanoharukasu/last',
-			*/
+			GameOver:p+'sounds/VOICE/K_VoiceFighter/game_over',
+			HitObstacle:p+'sounds/SE/LabJP/Battle/Fight/kick-high1',
+			GetItem:p+'sounds/SE/LabJP/Life/Run/dash-leather-shoes1_SHORT',
+			Clear:p+'sounds/SE/LabJP/System/cursor4',
 		};
 		for(var k in s){
 			var f=s[k];
