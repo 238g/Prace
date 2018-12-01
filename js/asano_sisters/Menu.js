@@ -10,24 +10,22 @@ BasicGame.Title.prototype={
 	},
 	create:function(){
 		this.time.events.removeAll();
-		//// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		this.stage.backgroundColor='#000';
+		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		this.M.SE.playBGM('TitleBGM',{volume:1});
 
-		this.genContents();
+		this.add.sprite(0,0,'bg1');
 
-		var title=this.add.sprite(this.world.width*.31,this.world.height*.5,'title');
+		var title=this.add.sprite(this.world.centerX,this.world.height*.3,'title');
 		title.anchor.setTo(.5);
+		this.M.T.beatA(title,{duration:214,start:!0});
 
 		var styl=this.M.S.styl(25);
-		this.M.S.lbl(this.world.centerX,this.world.height*.8,this.start,this.curWords.Start,styl,0x00ff00);
-		this.M.S.lbl(this.world.width*.2,this.world.height*.9,this.credit,'Credit',styl,0xffd700);
-		this.M.S.lbl(this.world.width*.8,this.world.height*.9,this.othergames,this.curWords.OtherGames,styl,0xffd700);
+		this.M.S.lbl(this.world.centerX,this.world.height*.7,this.start,this.curWords.Start,styl,0x00ff00);
+		this.M.S.lbl(this.world.width*.35,this.world.height*.9,this.credit,'Credit',styl,0xffd700);
+		this.M.S.lbl(this.world.width*.65,this.world.height*.9,this.yt,'YouTube',styl,0xFF0000);
 		
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
-	},
-	genContents:function(){
 	},
 	start:function(){
 		if (this.inputEnabled) {
@@ -56,16 +54,23 @@ BasicGame.Title.prototype={
 		window.open(url,"_blank");
 		myGa('external_link','Title','Credit',this.M.G.playCount);
 	},
-	othergames:function(){
+	yt:function(){
 		this.M.SE.play('OnBtn',{volume:1});
-		var url=__VTUBER_GAMES;
-		if(this.curLang=='en')url+='?lang=en';
-		window.open(url,"_blank");
-		myGa('othergames','Title','OtherGames',this.M.G.playCount);
+		var url=this.M.G.yt;
+		this.game.device.desktop?window.open(url,'_blank'):location.href=url;
+		myGa('youtube','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 	},
 	genHUD:function(){
-		var y=this.world.height*.08;
-		this.M.S.vol(this.world.width*.08,y,0x00ff00);
-		this.M.S.flsc(this.world.width*.92,y,0x00ff00);
+		var w,y=this.world.height*.7;
+		w=this.add.sprite(this.world.width*.3,y,'w');
+		w.anchor.setTo(.5);
+		w.width=60;
+		w.height=50;
+		w=this.add.sprite(this.world.width*.7,y,'w');
+		w.anchor.setTo(.5);
+		w.width=60;
+		w.height=50;
+		this.M.S.vol(this.world.width*.3,y,0xff00ff);
+		this.M.S.flsc(this.world.width*.7,y,0xff00ff);
 	},
 };
