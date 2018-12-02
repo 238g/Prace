@@ -6,3 +6,4 @@
 |#39|ドン！明寺|https://238g.github.io/Prace/odanoharukasu.html|2018/11/18|
 |#40|深層ゲームからごきげんよう|https://238g.github.io/Prace/dwu.html|2018/11/24|
 |#41|火葬パーティー|https://238g.github.io/Prace/icotsu.html|2018/11/26|
+|#42|朝ノ姉妹の忍者修行|https://238g.github.io/Prace/asano_sisters.html|2018/12/2|
