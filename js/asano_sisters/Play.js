@@ -23,6 +23,7 @@ BasicGame.Play.prototype={
 		this.nextPolePosMinX=this.world.width*.15;
 		this.nextPolePosMaxX=this.world.width*.4;
 		this.arrHP=[];
+		this.poleBaseWidth=80;
 
 		// Obj
 		this.BgS=this.NinjaS=this.PowerBarS=this.PoleGroup=
@@ -166,9 +167,23 @@ BasicGame.Play.prototype={
 			pole.body.setSize(pole.width,pole.height*.95,0,pole.height*.05);
 			pole.poleNum=this.placedPoles;
 			pole.anchor.setTo(.5,0);
+			this.resizePole(pole);
 			this.PoleGroup.add(pole);
 			var nextPolePos=poleX-this.rnd.between(this.nextPolePosMinX,this.nextPolePosMaxX);
 			this.addPole(nextPolePos);
+		}
+	},
+	resizePole:function(pole){
+		if(this.score>300){
+			pole.width=this.poleBaseWidth*.5;
+		}else if(this.score>250){
+			pole.width=this.poleBaseWidth*.6;
+		}else if(this.score>200){
+			pole.width=this.poleBaseWidth*.7;
+		}else if(this.score>150){
+			pole.width=this.poleBaseWidth*.8;
+		}else if(this.score>100){
+			pole.width=this.poleBaseWidth*.9;
 		}
 	},
 	resetPole:function(pole){
@@ -182,6 +197,7 @@ BasicGame.Play.prototype={
 		this.placedPoles++;
 		pole.poleNum=this.placedPoles;
 		pole.reset(nextPolePos,y);
+		this.resizePole(pole);
 	},
 	genPowerBar:function(){
 		this.PowerBarS=this.add.sprite(this.NinjaS.left,this.NinjaS.top,'w');
