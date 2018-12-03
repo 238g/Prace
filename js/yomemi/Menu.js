@@ -11,13 +11,11 @@ BasicGame.Title.prototype={
 	create:function(){
 		this.time.events.removeAll();
 		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		this.M.SE.playBGM('TitleBGM',{volume:1});
+		// this.M.SE.playBGM('TitleBGM',{volume:1});
 
-		this.add.sprite(0,0,'bg1');
 
-		var title=this.add.sprite(this.world.centerX,this.world.height*.3,'title');
-		title.anchor.setTo(.5);
-		this.M.T.beatA(title,{duration:214,start:!0});
+		// var title=this.add.sprite(this.world.centerX,this.world.height*.3,'title');
+		// title.anchor.setTo(.5);
 
 		var styl=this.M.S.styl(25);
 		this.M.S.lbl(this.world.centerX,this.world.height*.7,this.start,this.curWords.Start,styl,0x00ff00);
@@ -61,10 +59,8 @@ BasicGame.Title.prototype={
 		myGa('youtube','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 	},
 	genHUD:function(){
-		var y=this.world.height*.7;
-		this.M.S.bmpCir(this.world.width*.3,y,60,'#ffffff').anchor.setTo(.5);
-		this.M.S.bmpCir(this.world.width*.7,y,60,'#ffffff').anchor.setTo(.5);
-		this.M.S.vol(this.world.width*.3,y,0xff00ff);
-		this.M.S.flsc(this.world.width*.7,y,0xff00ff);
+		var y=this.world.height*.08;
+		this.M.S.vol(this.world.width*.08,y,0xff0000);
+		this.M.S.flsc(this.world.width*.92,y,0xff0000);
 	},
 };

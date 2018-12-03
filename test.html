@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>TEST</title>
+
+	<meta name="robots" content="noindex, follow" />
+
+	<meta name="theme-color" content="#000000">
+	<meta name="viewport" content="initial-scale=1 maximum-scale=1 user-scalable=0 minimal-ui" />
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="format-detection" content="telephone=no">
+	<meta name="HandheldFriendly" content="true" />
+	<meta name="apple-mobile-web-app-capable" content="yes" />
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+
+	<script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+</head>
+<body>
+	<div class="view"></div>
+	<script type="text/javascript">
+		var view=$('.view');
+		view.append('<br>--------START<br><br>');
+		//////////////////////////////////////////
+		// Make DB
+		var db = new Dexie('test');
+		// Make Table
+		db.version(1).stores({
+			// test_table:'id,name,desc',
+			test:'++id,name,desc',
+		});
+		// db.open();
+
+		// Make Sql
+		db.test.put({//insertORupdate
+			id:1,name:'aaaaa',desc:'bbbbbb',
+			// name:'aaaaa',desc:'bbbbbb',
+		}).then(function(){
+			view.append('then1(put)<br>');
+			return db.test.get(1);
+		}).then(function(row){//--async
+			view.append('then2(get)<br>');
+			view.append('row.name: '+row.name);
+			view.append('<br>');
+		}).catch(function(e){
+			alert(e);
+		});
+
+		db.test.add({name:'ccc',desc:'dddd'});
+		db.test.get(2)
+		.then(function(row){//--async
+			view.append('then3(get)<br>');
+			view.append('row.name: '+row.name);
+			view.append('<br>');
+		});
+		
+		db.test.toArray().then(function(rows){
+			console.log(rows);
+		});
+
+
+		//////////////////////////////////////////
+		setTimeout(function(){view.append('<br><br>--------1sec<br><br>')},1E3);
+		// setTimeout(function(){view.append('<br><br>--------3sec<br><br>')},3E3);
+
+		/* /////////////////////////
+		sql -> dexie.js
+		insert -> add/bulkAdd(array)
+		update -> update
+		upsert -> put/bulkPut(array)
+		delete -> delete
+		*/ /////////////////////////
+	</script>
+</body>
+</html>
