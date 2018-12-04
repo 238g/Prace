@@ -274,6 +274,7 @@ BasicGame.Play.prototype={
 		}
 
 		var newRes=[],
+		max=min=maxA=minA=null;
 		total=totalA=count=tmpCount=0;
 		tmpRes=[0,0,0,0,0,0,0,0,];
 		for(var k in res){
