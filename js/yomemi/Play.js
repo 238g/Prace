@@ -7,10 +7,13 @@ BasicGame.Play.prototype={
 		this.curLang=this.M.G.curLang;
 		this.Words=this.M.G.Words;
 		this.curWords=this.Words[this.curLang];
+		this.ItemInfo=this.M.G.ItemInfo;
 		// Val
-
+		this.selectedItemList=[];
+		this.selectedCount=0;
 
 		// Obj
+		this.ItemGroup=
 		// this.Fire=this.Nme=
 		// this.HUD=this.HowToS=this.ScoreTS=this.TimeTS=
 		null;
@@ -24,6 +27,7 @@ BasicGame.Play.prototype={
 		this.start();//TODO del
 		// this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
+		// this.tester();
 	},
 	start:function(){this.isPlaying=this.inputEnabled=!0},
 	end:function(){this.isPlaying=this.inputEnabled=!1},
@@ -40,63 +44,48 @@ BasicGame.Play.prototype={
 	},
 	genContents:function(){
 
-		var arr=[
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-			[0,1,2,4],
-		];
+		this.genItemGroup();
 
-		
-		var res=[];
-		for(var i=0;i<4;i++){
-			res[i]=arr[0][i];
-			for(var j=0;j<4;j++){
-				res[i+'-'+j]=res[i]*arr[1][j];
-				for(var k=0;k<4;k++){
-					res[i+'-'+j+'-'+k]=res[i+'-'+j]*arr[2][k];
-				}
-				res[i+'-'+j]=null;
-			}
-			res[i]=null;
-		}
-
-		console.log(res);
-		
-		var res=[];
-		for(var i=0;i<4;i++){
-			res[i]=arr[0][i];
-			/*
-			for(var j=0;j<4;j++){
-				res[i+'-'+j]=res[i]*arr[1][j];
-				for(var k=0;k<4;k++){
-					res[i+'-'+j+'-'+k]=res[i+'-'+j]*arr[2][k];
-				}
-				res[i+'-'+j]=null;
-			}
-			*/
-			bbb(1,i,i+'-');
-			res[i]=null;
-		}
-
-		function bbb (order,num,txt) {
-			if(order>2)return;
-			for(var j=0;j<4;j++){
-				res[txt+j]=res[num]*arr[order][j];
-			}
-			order++;
-			for(var j=0;j<4;j++){
-				bbb(order,j,txt+j+'-');
-				// res[txt+j]=null;
-			}
-		}
-
-		console.log(res);
 		// this.genHUD();
+	},
+	genItemGroup:function(){
+		this.ItemGroup=this.add.group();
+		var sx=this.world.width*.25;
+		var mx=this.world.width*.5;
+		var sy=this.world.height*.5;
+		var my=this.world.height*.3;
+		var col=0;
+		var row=0;
+		for(var k in this.ItemInfo){
+			var info=this.ItemInfo[k];
+			var b=this.add.button(sx+mx*col,sy+my*row,'w',this.selectItem,this,);
+			b.width=b.height=120;//TODO del
+			b.anchor.setTo(.5);
+			b.itemId=k;
+			var ts=this.M.S.txt(b.x,b.bottom,33333333333);//TODO del
+			// var ts=this.M.S.txt(b.x,b.bottom,info.name);
+			this.ItemGroup.add(b);
+			this.ItemGroup.add(ts);
+			row++;
+			if(row==2){
+				row=0;
+				col++;
+			}
+		}
+	},
+	selectItem:function(b){
+		if(this.inputEnabled){
+			this.inputEnabled=!1;
+			this.selectedItemList.push(b.itemId);
+			this.selectedCount++;
+			if(this.selectedCount==8){
+				//TODO end
+			}else{
+				//TODO tween next
+				//TODO item to pot
+				//TODO end tween -> input enable
+			}
+		}
 	},
 	genHUD:function(){
 		this.HUD=this.add.group();
@@ -224,5 +213,131 @@ BasicGame.Play.prototype={
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
 			myGa('youtube','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 		}
+	},
+	tester:function(arr){
+		if(__ENV=='prod')return;
+		arr=arr||[
+			[-32,43,1,21],
+			[5,-3,108,8],
+			[34,115,80,2],
+			[-30,-50,-20,4],
+			[-200,200,33,27],
+			[11,-9,6,14],
+			[-7,9,-13,29],
+			[-56,88,-73,36],
+		];
+		/*
+		var res=[];
+		for(var i=0;i<4;i++){
+			res[i]=arr[0][i];
+			for(var j=0;j<4;j++){
+				res[i+'-'+j]=res[i]*arr[1][j];
+				for(var k=0;k<4;k++){
+					res[i+'-'+j+'-'+k]=res[i+'-'+j]*arr[2][k];
+				}
+				res[i+'-'+j]=null;
+			}
+			res[i]=null;
+		}
+		console.log(res);
+		*/
+
+		var res=[];
+		for(var i=0;i<4;i++){
+			res[i]=arr[0][i];
+			bbb(1,i,i+'-');
+		}
+
+		function bbb (order,num,txt) {
+			if(order>7)return;
+			// if(order>2)return;
+			for(var j=0;j<4;j++){
+				var txt_A=txt+j;
+				switch(order){
+					case 1:res[txt_A]=res[num]*arr[order][j];break;
+					case 2:res[txt_A]=res[num]+arr[order][j];break;
+					case 3:res[txt_A]=res[num]-arr[order][j];break;
+					case 4:res[txt_A]=res[num]+arr[order][j];break;
+					case 5:res[txt_A]=res[num]*arr[order][j];break;
+					case 6:res[txt_A]=res[num]-arr[order][j];break;
+					case 7:res[txt_A]=res[num]*arr[order][j];break;
+					case 8:res[txt_A]=res[num]+arr[order][j];break;
+				}
+			}
+			order++;
+			for(var j=0;j<4;j++){
+				var txt_A=txt+j;
+				var txt_B=txt+j+'-';
+				bbb(order,txt_A,txt_B);
+			}
+			res[num]=null;
+		}
+
+		var newRes=[],
+		total=totalA=count=tmpCount=0;
+		tmpRes=[0,0,0,0,0,0,0,0,];
+		for(var k in res){
+			var v=res[k];
+			if(v){
+				if(max==null){
+					max=v;
+					min=v;
+				}
+				max=Math.max(max,v);
+				min=Math.min(min,v);
+				total+=v;
+
+				var vA=Math.abs(v);
+				if(maxA==null){
+					maxA=vA;
+					minA=vA;
+				}
+				maxA=Math.max(maxA,vA);
+				minA=Math.min(minA,vA);
+				totalA+=vA;
+
+				count++;
+
+				// if(count%1000==0)tmpCount++;
+				// if(!newRes[tmpCount])newRes[tmpCount]={};
+				// newRes[tmpCount][k]=v;
+
+				// newRes[k]=v;
+
+				if(vA>5000000){
+					newRes[k]=vA;
+					tmpRes[0]++;
+				}else if(vA>1000000){
+					tmpRes[1]++;
+				}else if(vA>200000){
+					tmpRes[2]++;
+				}else if(vA>100000){
+					tmpRes[3]++;
+				}else if(vA>50000){
+					tmpRes[4]++;
+				}else if(vA>10000){
+					tmpRes[5]++;
+				}else if(vA>1000){
+					tmpRes[6]++;
+				}else{
+					newRes[k]=vA;
+					tmpRes[7]++;
+				}
+			}
+		}
+		// console.log(res);
+		console.log(newRes);
+		console.log('max: '+max,'min: '+min,'total: '+total,'count: '+count,'average: '+(total/count));
+		console.log('maxA: '+maxA,'minA: '+minA,'totalA: '+totalA,'count: '+count,'averageA: '+(totalA/count));
+		console.log(tmpRes);
+
+		/*
+		for(var i=0;i<4;i++){
+			var keyTxt='';
+			for(var j=0;j<8;j++)keyTxt+=i+'-';
+			keyTxt=keyTxt.slice(0,-1);
+			console.log(newRes[keyTxt]);
+		}
+		*/
 	},
 };

@@ -19,41 +19,42 @@ BasicGame.Boot.prototype={
 	create:function(){
 		this.M.G.Words=this.genWords();
 		this.M.G.ItemInfo=this.genItemInfo();
-		this.M.G.Recipe=this.genRecipe();
 		this.M.NextScene('Preloader');
 	},
 	genItemInfo:function(){
 		return {
-			1:{name:'',},
-			2:{name:'',},
-			3:{name:'',},
-			4:{name:'',},
-			5:{name:'',},
-			6:{name:'',},
-			7:{name:'',},
-			8:{name:'',},
-			9:{name:'',},
-			10:{name:'',},
-			11:{name:'',},
-			12:{name:'',},
-			13:{name:'',},
-			14:{name:'',},
-			15:{name:'',},
-			16:{name:'',},
-			17:{name:'',},
-			18:{name:'',},
-			19:{name:'',},
-			20:{name:'',},
-			21:{name:'',},
-			22:{name:'',},
-			23:{name:'',},
-			24:{name:'',},
-			25:{name:'',},
-		};
-	},
-	genRecipe:function(){
-		return {
-
+			1:{name:'',val:-32},
+			2:{name:'',val:43},
+			3:{name:'',val:1},
+			4:{name:'',val:21},
+			5:{name:'',val:5},
+			6:{name:'',val:-3},
+			7:{name:'',val:108},
+			8:{name:'',val:8},
+			9:{name:'',val:34},
+			10:{name:'',val:115},
+			11:{name:'',val:80},
+			12:{name:'',val:2},
+			13:{name:'',val:-30},
+			14:{name:'',val:-50},
+			15:{name:'',val:-20},
+			16:{name:'',val:4},
+			17:{name:'',val:-200},
+			18:{name:'',val:200},
+			19:{name:'',val:33},
+			20:{name:'',val:27},
+			21:{name:'',val:11},
+			22:{name:'',val:-9},
+			23:{name:'',val:6},
+			24:{name:'',val:14},
+			25:{name:'',val:-7},
+			26:{name:'',val:9},
+			27:{name:'',val:-13},
+			28:{name:'',val:29},
+			29:{name:'',val:-56},
+			30:{name:'',val:88},
+			31:{name:'',val:-73},
+			32:{name:'',val:36},
 		};
 	},
 	genWords:function(){
@@ -61,6 +62,7 @@ BasicGame.Boot.prototype={
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
+				// All Count 65536
 				/*
 				Start:'スタート',
 				OtherGames:'他のゲーム',
@@ -101,6 +103,7 @@ BasicGame.Preloader.prototype={
 			'PubLogo':p+'images/public/logo/logo.png',
 			'wp':'images/icotsu/wp.jpg',
 			'twp':'images/icotsu/twp60.png',
+			'w':'images/public/w.jpg',
 
 
 
