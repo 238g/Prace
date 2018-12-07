@@ -19,6 +19,7 @@ BasicGame.Boot.prototype={
 	create:function(){
 		this.M.G.Words=this.genWords();
 		this.M.G.ItemInfo=this.genItemInfo();
+		this.M.G.ResInfo=this.genResInfo();
 		this.M.NextScene('Preloader');
 	},
 	genItemInfo:function(){
@@ -57,27 +58,31 @@ BasicGame.Boot.prototype={
 			32:{name:'',val:36},
 		};
 	},
+	genResInfo:function(){
+		return {
+			0:{name:'aaa',},
+			1:{name:'',},
+			2:{name:'',},
+			3:{name:'',},
+			4:{name:'',},
+			5:{name:'',},
+			6:{name:'',},
+			7:{name:'',},
+		};
+	},
 	genWords:function(){
 		////// var touchJP=this.M.G.TOUCH_WORD;
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
-				// All Count 65536
-				/*
 				Start:'スタート',
-				OtherGames:'他のゲーム',
-				ScoreFront:'香典',
-				ScoreBack:'万円',
-				ScoreBillion:'億',
-				End:'終了',
-				Time:'Time',
-				HowTo:'bbbbbbbbbbb',
+				HowTo:'bbbbbbbbbbb',// All Count 65536
 				Again:'もう一度！',
 				TwBtn:'結果をツイート',
 				Back:'もどる',
+				OtherGames:'他のゲーム',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'aaaaaaaaaa',
-				*/
 			},
 			en:{
 			},

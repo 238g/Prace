@@ -268,7 +268,7 @@ BasicGame.Play.prototype={
 			this.Tween=this.M.T.fadeInA(wp,{duration:600,alpha:1});
 			this.Tween.onComplete.add(function(){this.M.NextScene('Play')},this);
 			this.Tween.start();
-			myGa('again','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('again','Play','Stage_'+this.M.G.curStage,this.M.G.playCount);
 		}
 	},
 	tweet:function(){
@@ -299,7 +299,7 @@ BasicGame.Play.prototype={
 			var url=__VTUBER_GAMES;
 			if(this.curLang=='en')url+='?lang=en';
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('othergames','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('othergames','Play','Stage_'+this.M.G.curStage,this.M.G.playCount);
 		}
 	},
 	tw:function(){
@@ -307,7 +307,7 @@ BasicGame.Play.prototype={
 			this.M.SE.play('OnBtn',{volume:1});
 			var url=this.M.G.tw;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('twitter','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('twitter','Play','Stage_'+this.M.G.curStage,this.M.G.playCount);
 		}
 	},
 	yt:function(){
@@ -315,7 +315,7 @@ BasicGame.Play.prototype={
 			this.M.SE.play('OnBtn',{volume:1});
 			var url=this.M.G.yt;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('youtube','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('youtube','Play','Stage_'+this.M.G.curStage,this.M.G.playCount);
 		}
 	},
 };

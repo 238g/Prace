@@ -18,9 +18,8 @@ BasicGame.Title.prototype={
 		// title.anchor.setTo(.5);
 
 		var styl=this.M.S.styl(25);
-		this.M.S.lbl(this.world.centerX,this.world.height*.7,this.start,this.curWords.Start,styl,0x00ff00);
-		this.M.S.lbl(this.world.width*.35,this.world.height*.9,this.credit,'Credit',styl,0xffd700);
-		this.M.S.lbl(this.world.width*.65,this.world.height*.9,this.yt,'YouTube',styl,0xFF0000);
+		this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.start,this.curWords.Start,styl,0x00ff00);
+		this.M.S.lbl(this.world.width*.27,this.world.height*.85,this.credit,'Credit',styl,0xffd700);
 		
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
@@ -52,15 +51,9 @@ BasicGame.Title.prototype={
 		window.open(url,"_blank");
 		myGa('external_link','Title','Credit',this.M.G.playCount);
 	},
-	yt:function(){
-		this.M.SE.play('OnBtn',{volume:1});
-		var url=this.M.G.yt;
-		this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-		myGa('youtube','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
-	},
 	genHUD:function(){
 		var y=this.world.height*.08;
-		this.M.S.vol(this.world.width*.08,y,0xff0000);
-		this.M.S.flsc(this.world.width*.92,y,0xff0000);
+		this.M.S.vol(this.world.width*.1,y,0xff0000);
+		this.M.S.flsc(this.world.width*.9,y,0xff0000);
 	},
 };

@@ -8,6 +8,9 @@ BasicGame.Play.prototype={
 		this.Words=this.M.G.Words;
 		this.curWords=this.Words[this.curLang];
 		this.ItemInfo=this.M.G.ItemInfo;
+		this.ResInfo=this.M.G.ResInfo;
+		this.curRes=1;
+		this.curResInfo=null;
 		// Val
 		this.selectedItemList=[];
 		this.selectedCount=0;
@@ -15,7 +18,9 @@ BasicGame.Play.prototype={
 		// Obj
 		this.ItemGroup=
 		// this.Fire=this.Nme=
-		// this.HUD=this.HowToS=this.ScoreTS=this.TimeTS=
+		// this.HUD=
+		this.HowToS=
+		// this.ScoreTS=this.TimeTS=
 		null;
 		this.Tween={};
 	},
@@ -33,29 +38,24 @@ BasicGame.Play.prototype={
 	end:function(){this.isPlaying=this.inputEnabled=!1},
 	test:function(){
 		if(__ENV!='prod'){
-			// this.input.keyboard.addKey(Phaser.Keyboard.G).onDown.add(this.gameOver,this);
-			// this.input.keyboard.addKey(Phaser.Keyboard.K).onDown.add(this.respawnKerin,this);
-			// this.input.keyboard.addKey(Phaser.Keyboard.P).onDown.add(this.respawnPandei,this);
-		}
-	},
-	updateT:function(){
-		if(this.isPlaying){
+			this.input.keyboard.addKey(Phaser.Keyboard.E).onDown.add(function(){
+				for(var i=0;i<8;i++)this.selectedItemList[i]=this.rnd.between(1,32);
+				this.genEnd();
+			},this);
 		}
 	},
 	genContents:function(){
-
 		this.genItemGroup();
 
 		// this.genHUD();
 	},
 	genItemGroup:function(){
 		this.ItemGroup=this.add.group();
-		var sx=this.world.width*.25;
-		var mx=this.world.width*.5;
-		var sy=this.world.height*.5;
-		var my=this.world.height*.3;
-		var col=0;
-		var row=0;
+		var sx=this.world.width*.25,
+		mx=this.world.width*.5,
+		sy=this.world.height*.5,
+		my=this.world.height*.3,
+		col=row=0;
 		for(var k in this.ItemInfo){
 			var info=this.ItemInfo[k];
 			var b=this.add.button(sx+mx*col,sy+my*row,'w',this.selectItem,this,);
@@ -64,6 +64,7 @@ BasicGame.Play.prototype={
 			b.itemId=k;
 			var ts=this.M.S.txt(b.x,b.bottom,33333333333);//TODO del
 			// var ts=this.M.S.txt(b.x,b.bottom,info.name);
+			b.ts=ts;
 			this.ItemGroup.add(b);
 			this.ItemGroup.add(ts);
 			row++;
@@ -78,13 +79,23 @@ BasicGame.Play.prototype={
 			this.inputEnabled=!1;
 			this.selectedItemList.push(b.itemId);
 			this.selectedCount++;
-			if(this.selectedCount==8){
-				//TODO end
-			}else{
-				//TODO tween next
-				//TODO item to pot
-				//TODO end tween -> input enable
-			}
+
+			b.x=b.worldPosition.x;
+			b.y=b.worldPosition.y;
+			this.world.add(b);
+			b.ts.visible=!1;
+			var tw=this.M.T.moveA(b,{xy:{x:this.world.width*.8,y:this.world.height*.2},start:!0});
+			this.M.T.moveB(this.ItemGroup,{xy:{x:'-'+this.world.width},duration:800,start:!0});
+			tw.onComplete.add(function(s){
+				s.destroy();
+				if(this.selectedCount==8){
+					this.genEnd();
+				}else{
+					this.inputEnabled=!0;
+				}
+			},this);
+
+			if(this.selectedCount==8)this.end()
 		}
 	},
 	genHUD:function(){
@@ -106,54 +117,59 @@ BasicGame.Play.prototype={
 			},this);
 		},this);
 	},
-	genStart:function(){
-		var s=this.M.S.txt(this.world.centerX,-this.world.centerY,this.curWords.Start,this.M.S.styl(50,'#ff8c00'));
-		var twA=this.M.T.moveA(s,{xy:{y:this.world.centerY},start:!0});
-		var twB=this.M.T.moveA(s,{xy:{x:-this.world.centerX},delay:200});
-		twA.chain(twB);
-		twA.onComplete.add(function(){
-			this.inputEnabled=!0;
-			this.start();
-		},this);
-		twA.onComplete.add(function(){this.destroy},s);
-		this.HUD.visible=!0;
-		// this.M.SE.playBGM('PlayBGM',{volume:1});
-		// this.M.SE.play('start',{volume:1});
-	},
-	gameOver:function(){
-		this.end();
-		this.genEnd();
-		this.Nme.children.forEach(function(c){c.inputEnabled=!1});
-	},
 	genEnd:function(){
-		var s=this.M.S.txt(this.world.centerX,-this.world.centerY,this.curWords.End,this.M.S.styl(50,'#dc143c'));
-		var twA=this.M.T.moveA(s,{xy:{y:this.world.centerY},start:!0});
-		twA.onComplete.add(function(){
-			this.genRes();
-		},this);
-		this.HUD.add(s);
-		// this.M.SE.play('fin',{volume:1});
+		this.resultItem();
+
+		console.log(this.curResInfo);
+
+		// TODO
+
+		this.genRes();
+	},
+	resultItem:function(){
+		var a=[];
+		for(var k in this.selectedItemList)a.push(this.ItemInfo[this.selectedItemList[k]].val);
+		var r,resutlNum=Math.abs(a[0]*a[1]+a[2]-a[3]+a[4]*a[5]-a[6]*a[7]);
+		if(resutlNum>5000000){
+			r=0;
+		}else if(resutlNum>1000000){
+			r=1;
+		}else if(resutlNum>200000){
+			r=2;
+		}else if(resutlNum>100000){
+			r=3;
+		}else if(resutlNum>50000){
+			r=4;
+		}else if(resutlNum>10000){
+			r=5;
+		}else if(resutlNum>1000){
+			r=6;
+		}else{
+			r=7;
+		}
+		this.curRes=r;
+		this.curResInfo=this.ResInfo[this.curRes];
 	},
 	genRes:function(){
-		var s=this.add.sprite(0,-this.world.height,'twp');
+		var s=this.add.sprite(this.world.width,this.world.centerY,'twp');
 		s.tint=0x000000;
-		var tw=this.M.T.moveD(s,{xy:{y:0},delay:600});
+		var tw=this.M.T.moveD(s,{xy:{x:0},delay:600});
 		tw.onComplete.add(function(){
 			this.inputEnabled=!0;
-			this.HUD.visible=!1;
+			// this.HUD.visible=!1;
 		},this);
 		tw.start();
 		// tw.onStart.add(function(){this.M.SE.play('start',{volume:1})},this);
 
-		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.3,this.curWords.ScoreFront+'\n'+this.genScore()+this.curWords.ScoreBack,this.M.S.styl(40,'#dc143c')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.05,3333,this.M.S.styl(40,'#dc143c')));
 
 		var lX=this.world.width*.25,rX=this.world.width*.75;
-		s.addChild(this.M.S.lbl(lX,this.world.height*.6,this.again,this.curWords.Again,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.6,this.tweet,this.curWords.TwBtn,this.M.S.styl(25,'#00a2f8'),0x00a2f8));
-		s.addChild(this.M.S.lbl(lX,this.world.height*.75,this.back,this.curWords.Back,this.M.S.styl(25,'#8a2be2'),0x8a2be2));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.75,this.othergames,this.curWords.OtherGames,this.M.S.styl(25,'#ffa500'),0xffa500));
-		s.addChild(this.M.S.lbl(lX,this.world.height*.9,this.tw,'Twitter',this.M.S.styl(25,'#00a2f8'),0x00a2f8));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.9,this.yt,'YouTube',this.M.S.styl(25,'#ff0000'),0xff0000));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.2,this.again,this.curWords.Again,this.M.S.styl(25,'#ffd700'),0xffd700));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.2,this.tweet,this.curWords.TwBtn,this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.3,this.back,this.curWords.Back,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.3,this.othergames,this.curWords.OtherGames,this.M.S.styl(25,'#ffa500'),0xffa500));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.4,this.tw,'Twitter',this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.4,this.yt,'YouTube',this.M.S.styl(25,'#ff0000'),0xff0000));
 	},
 	again:function(){
 		if(this.inputEnabled&&!this.Tween.isRunning){
@@ -165,7 +181,7 @@ BasicGame.Play.prototype={
 			this.Tween=this.M.T.fadeInA(wp,{duration:600,alpha:1});
 			this.Tween.onComplete.add(function(){this.M.NextScene('Play')},this);
 			this.Tween.start();
-			myGa('again','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('again','Play','Result_'+this.curRes,this.M.G.playCount);
 		}
 	},
 	tweet:function(){
@@ -175,7 +191,7 @@ BasicGame.Play.prototype={
 			var res='oooooooooooooooooooooo';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
-			myGa('tweet','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('tweet','Play','Result_'+this.curRes,this.M.G.playCount);
 		}
 	},
 	back:function(){
@@ -195,7 +211,7 @@ BasicGame.Play.prototype={
 			var url=__VTUBER_GAMES;
 			if(this.curLang=='en')url+='?lang=en';
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('othergames','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('othergames','Play','Result_'+this.curRes,this.M.G.playCount);
 		}
 	},
 	tw:function(){
@@ -203,7 +219,7 @@ BasicGame.Play.prototype={
 			this.M.SE.play('OnBtn',{volume:1});
 			var url=this.M.G.tw;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('twitter','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('twitter','Play','Result_'+this.curRes,this.M.G.playCount);
 		}
 	},
 	yt:function(){
@@ -211,7 +227,7 @@ BasicGame.Play.prototype={
 			this.M.SE.play('OnBtn',{volume:1});
 			var url=this.M.G.yt;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('youtube','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
+			myGa('youtube','Play','Result_'+this.curRes,this.M.G.playCount);
 		}
 	},
 	tester:function(arr){
@@ -261,7 +277,6 @@ BasicGame.Play.prototype={
 					case 5:res[txt_A]=res[num]*arr[order][j];break;
 					case 6:res[txt_A]=res[num]-arr[order][j];break;
 					case 7:res[txt_A]=res[num]*arr[order][j];break;
-					case 8:res[txt_A]=res[num]+arr[order][j];break;
 				}
 			}
 			order++;
