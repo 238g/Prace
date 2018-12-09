@@ -38,9 +38,9 @@ BasicGame.Boot.prototype={
 			11:{name:'民民打破',val:80,name_en:'SleepBreaker',},
 			12:{name:'アリエナミンV',val:2,name_en:'ImpossibleV',},
 
-			13:{name:'ヂョコラDD',val:-30,name_en:'ZhocolaBB',},
+			13:{name:'ヂョコラDD',val:-30,name_en:'ZhocolaDD',},
 			14:{name:'ハートブレイカー',val:-50,name_en:'HeartBreaker',},
-			15:{name:'リボDスーパー',val:-20,name_en:'RiboDSuper',},
+			15:{name:'リボDスーパー',val:-20,name_en:'SuperRiboD',},
 			16:{name:'デッドブル',val:4,name_en:'DeadBull',},
 
 			17:{name:'ウドンの力',val:-200,name_en:'PowerOfUdon',},
@@ -49,7 +49,7 @@ BasicGame.Boot.prototype={
 			20:{name:'バニラエッセンス？',val:27,name_en:'VanillaEssence?',},
 
 			21:{name:'プリンの素',val:11,name_en:'PuddingMix',},
-			22:{name:'にんじん',val:-9,name_en:'Carrots',},
+			22:{name:'にんじん',val:-9,name_en:'Carrot',},
 			23:{name:'ハンバーガー',val:6,name_en:'Hamburger',},
 			24:{name:'チョコレート',val:14,name_en:'Chocolate',},
 			
@@ -101,7 +101,7 @@ BasicGame.Boot.prototype={
 				TwBtn:'Tweet Result',
 				Back:'Back',
 				OtherGames:'OtherGames',
-				TwTtl:'I have played a game "'+this.M.G.GAME_TITLE_EN+'".',
+				TwTtl:'I have played the game "'+this.M.G.GAME_TITLE_EN+'".',
 				TwHT:'YomemiGame',
 				WatchThisMv:'Watch This MV',
 				End:'Complete!',
