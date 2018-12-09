@@ -332,16 +332,16 @@ function copyJson(o){
 	for(var k in o)n[k]=o[k];
 	return n;
 }
-function　mergeJson(from,to){
+function mergeJson(from,to){
 	for(var k in from)to[key]=from[k];
 	return to;
 }
-function　getRndItemsFromArr(arr,count){
+function getRndItemsFromArr(arr,count){
 	var r=arr.slice();
 	for (var i=ta.length;i>count;i--) Phaser.ArrayUtils.removeRandomItem(r);
 	return Phaser.ArrayUtils.shuffle(r);
 }
-function　tweet(text,hashtags,tweetUrl){
+function tweet(text,hashtags,tweetUrl){
 	// hashtags:'A,B,C'
 	tweetUrl=tweetUrl||location.href;
 	window.open(
@@ -350,16 +350,15 @@ function　tweet(text,hashtags,tweetUrl){
 	);
 	return !1;
 }
-function　splice1(arr,location){
+function splice1(arr,location){
 	var l=arr.length;
 	if (l){
 		while(location<l)arr[location++]=arr[location];
 		--arr.length;
 	}
 }
-function　changeTtl(t){
+function changeTtl(t){
 	document.title=t;
-	this.M.GmObj.GAME_TITLE=t;
 	document.getElementsByName('apple-mobile-web-app-title')[0].setAttribute('content',t);
 }
 if(__ENV!='prod'){

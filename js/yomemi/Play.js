@@ -14,23 +14,22 @@ BasicGame.Play.prototype={
 		// Val
 		this.selectedItemList=[];
 		this.selectedCount=0;
+		this.bgNum=2;
 
 		// Obj
-		this.ItemGroup=
-		// this.Fire=this.Nme=
-		// this.HUD=
-		this.HowToS=
-		// this.ScoreTS=this.TimeTS=
+		this.ItemGroup=this.BgS=this.HowToS=
+		this.EndTS=this.UmaS=this.WPS=this.ShipS=this.ResS=
 		null;
 		this.Tween={};
 	},
 	create:function(){
 		this.time.events.removeAll();
-		// this.stage.backgroundColor='#000';
+		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
+		this.M.SE.playBGM('TitleBGM',{volume:1});
+		this.M.SE.play('PlayBGM',{volume:.3,loop:!0});
 
 		this.genContents();
-		this.start();//TODO del
-		// this.M.G.endTut?this.genStart():this.genTut();
+		this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
 		// this.tester();
 	},
@@ -42,28 +41,49 @@ BasicGame.Play.prototype={
 				for(var i=0;i<8;i++)this.selectedItemList[i]=this.rnd.between(1,32);
 				this.genEnd();
 			},this);
+			if(getQuery('res')){
+				this.time.events.add(200,function(){
+					this.M.SE.stop('TitleBGM',{volume:1});
+					this.M.SE.stop('PlayBGM',{volume:1});
+				},this);
+				if(this.HowToS)this.HowToS.visible=!1;
+				this.curRes=getQuery('res');
+				this.curResInfo=this.ResInfo[this.curRes];
+				this.showShip();
+			}
 		}
 	},
 	genContents:function(){
+		this.genBg();
 		this.genItemGroup();
-
-		// this.genHUD();
+		this.EndTS=this.M.S.txt(this.world.width*1.5,this.world.height*.75,this.curWords.End,this.M.S.styl(45,'#ff0000'));
+		this.EndTS.visible=!1;
+		this.UmaS=this.add.sprite(0,0,'bg10');
+		this.UmaS.visible=!1;
+		this.WPS=this.add.sprite(0,0,'wp');
+		this.WPS.visible=!1;
+		this.ShipS=this.add.sprite(0,0,'bg11');
+		this.ShipS.visible=!1;
+		this.ResS=this.add.sprite(0,0,'res1');
+		this.ResS.visible=!1;
+		this.ResS.alpha=0;
+	},
+	genBg:function(){
+		this.BgS=this.add.sprite(0,0,'bg'+this.bgNum);
 	},
 	genItemGroup:function(){
 		this.ItemGroup=this.add.group();
 		var sx=this.world.width*.25,
 		mx=this.world.width*.5,
-		sy=this.world.height*.5,
-		my=this.world.height*.3,
+		sy=this.world.height*.58,
+		my=this.world.height*.28,
 		col=row=0;
 		for(var k in this.ItemInfo){
 			var info=this.ItemInfo[k];
-			var b=this.add.button(sx+mx*col,sy+my*row,'w',this.selectItem,this,);
-			b.width=b.height=120;//TODO del
+			var b=this.add.button(sx+mx*col,sy+my*row,'item_'+k,this.selectItem,this);
 			b.anchor.setTo(.5);
 			b.itemId=k;
-			var ts=this.M.S.txt(b.x,b.bottom,33333333333);//TODO del
-			// var ts=this.M.S.txt(b.x,b.bottom,info.name);
+			var ts=this.M.S.txt(b.x,b.bottom,this.curLang=='en'?info.name_en:info.name);
 			b.ts=ts;
 			this.ItemGroup.add(b);
 			this.ItemGroup.add(ts);
@@ -80,30 +100,31 @@ BasicGame.Play.prototype={
 			this.selectedItemList.push(b.itemId);
 			this.selectedCount++;
 
+			this.M.SE.play('selectItem',{volume:1});
+
 			b.x=b.worldPosition.x;
 			b.y=b.worldPosition.y;
 			this.world.add(b);
 			b.ts.visible=!1;
-			var tw=this.M.T.moveA(b,{xy:{x:this.world.width*.8,y:this.world.height*.2},start:!0});
+			var tw=this.M.T.moveA(b,{xy:{x:this.world.centerX,y:this.world.height*.2},start:!0});
 			this.M.T.moveB(this.ItemGroup,{xy:{x:'-'+this.world.width},duration:800,start:!0});
-			tw.onComplete.add(function(s){
-				s.destroy();
-				if(this.selectedCount==8){
-					this.genEnd();
-				}else{
-					this.inputEnabled=!0;
-				}
-			},this);
+			tw.onComplete.add(this.intoPot,this);
 
 			if(this.selectedCount==8)this.end()
 		}
 	},
-	genHUD:function(){
-		this.HUD=this.add.group();
-		this.ScoreTS=this.M.S.txt(this.Fire.x,this.Fire.bottom,this.curWords.ScoreFront+0+this.curWords.ScoreBack,this.M.S.styl(25,'#008000'));
-		this.TimeTS=this.M.S.txt(this.world.centerX,this.world.height*.05,this.curWords.Time+':'+this.leftTime,this.M.S.styl(25,'#1e90ff'));
-		this.HUD.add(this.ScoreTS);
-		this.HUD.add(this.TimeTS);
+	intoPot:function(s){
+		s.destroy();
+
+		this.M.SE.play('intoPot',{volume:1});
+
+		if(this.selectedCount==8){
+			this.genEnd();
+		}else{
+			this.inputEnabled=!0;
+			this.bgNum++;
+			this.BgS.loadTexture('bg'+this.bgNum);
+		}
 	},
 	genTut:function(){
 		this.HowToS=this.add.sprite(0,0,'twp');
@@ -117,63 +138,88 @@ BasicGame.Play.prototype={
 			},this);
 		},this);
 	},
+	genStart:function(){
+		this.M.SE.play('OnStart',{volume:1});
+		this.time.events.add(200,this.start,this);
+	},
 	genEnd:function(){
 		this.resultItem();
-
-		console.log(this.curResInfo);
-
-		// TODO
-
-		this.genRes();
+		this.EndTS.visible=!0;
+		var tw=this.M.T.moveA(this.EndTS,{xy:{x:this.world.centerX},start:!0});
+		tw.onComplete.add(this.genDrinkAnim,this);
+		this.M.SE.play('end',{volume:1});
 	},
 	resultItem:function(){
 		var a=[];
 		for(var k in this.selectedItemList)a.push(this.ItemInfo[this.selectedItemList[k]].val);
-		var r,resutlNum=Math.abs(a[0]*a[1]+a[2]-a[3]+a[4]*a[5]-a[6]*a[7]);
+		var r,resutlNum=Math.abs(((((((a[0]*a[1])+a[2])-a[3])+a[4])*a[5])-a[6])*a[7]);
 		if(resutlNum>5000000){
-			r=0;
-		}else if(resutlNum>1000000){
 			r=1;
-		}else if(resutlNum>200000){
+		}else if(resutlNum>1000000){
 			r=2;
-		}else if(resutlNum>100000){
+		}else if(resutlNum>200000){
 			r=3;
-		}else if(resutlNum>50000){
+		}else if(resutlNum>100000){
 			r=4;
-		}else if(resutlNum>10000){
+		}else if(resutlNum>50000){
 			r=5;
-		}else if(resutlNum>1000){
+		}else if(resutlNum>10000){
 			r=6;
-		}else{
+		}else if(resutlNum>1000){
 			r=7;
+		}else{
+			r=8;
 		}
 		this.curRes=r;
 		this.curResInfo=this.ResInfo[this.curRes];
 	},
+	genDrinkAnim:function(){
+		this.time.events.add(500,function(){
+			this.M.SE.stop('TitleBGM',{volume:1});
+			this.M.SE.stop('PlayBGM',{volume:1});
+			this.time.events.add(300,function(){
+				this.M.SE.play('drink',{volume:1});
+				this.UmaS.visible=!0;
+				this.time.events.add(2E3,this.showShip,this);
+			},this);
+		},this);
+	},
+	showShip:function(){
+		this.WPS.visible=!0;
+		this.ShipS.visible=!0;
+		this.M.SE.playBGM('ResBGM',{volume:1});
+		this.genRes();
+	},
 	genRes:function(){
-		var s=this.add.sprite(this.world.width,this.world.centerY,'twp');
+		var s=this.add.sprite(0,this.world.height,'twp');
 		s.tint=0x000000;
-		var tw=this.M.T.moveD(s,{xy:{x:0},delay:600});
+		var tw=this.M.T.moveD(s,{xy:{y:this.ShipS.bottom},delay:600});
 		tw.onComplete.add(function(){
 			this.inputEnabled=!0;
-			// this.HUD.visible=!1;
 		},this);
 		tw.start();
-		// tw.onStart.add(function(){this.M.SE.play('start',{volume:1})},this);
 
-		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.05,3333,this.M.S.styl(40,'#dc143c')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.07,this.curWords.Res,this.M.S.styl(40,'#3cb371')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.17,this.curRes+'.'+(this.curLang=='en'?this.curResInfo.name_en:this.curResInfo.name),this.M.S.styl(35,'#dc143c')));
 
 		var lX=this.world.width*.25,rX=this.world.width*.75;
-		s.addChild(this.M.S.lbl(lX,this.world.height*.2,this.again,this.curWords.Again,this.M.S.styl(25,'#ffd700'),0xffd700));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.2,this.tweet,this.curWords.TwBtn,this.M.S.styl(25,'#00a2f8'),0x00a2f8));
-		s.addChild(this.M.S.lbl(lX,this.world.height*.3,this.back,this.curWords.Back,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.3,this.othergames,this.curWords.OtherGames,this.M.S.styl(25,'#ffa500'),0xffa500));
-		s.addChild(this.M.S.lbl(lX,this.world.height*.4,this.tw,'Twitter',this.M.S.styl(25,'#00a2f8'),0x00a2f8));
-		s.addChild(this.M.S.lbl(rX,this.world.height*.4,this.yt,'YouTube',this.M.S.styl(25,'#ff0000'),0xff0000));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.28,this.again,this.curWords.Again,this.M.S.styl(25,'#ffd700'),0xffd700));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.28,this.tweet,this.curWords.TwBtn,this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.38,this.back,this.curWords.Back,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.38,this.othergames,this.curWords.OtherGames,this.M.S.styl(25,'#ffa500'),0xffa500));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.48,this.tw,'Twitter',this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.48,this.yt,'YouTube',this.M.S.styl(25,'#ff0000'),0xff0000));
+
+		if(this.curRes==1||this.curRes==8){
+			this.ResS.loadTexture('res'+this.curRes);
+			this.ResS.visible=!0;
+			this.world.bringToTop(this.ResS);
+			this.add.tween(this.ResS).to({alpha:1},1E3,null,!0,1800);
+		}
 	},
 	again:function(){
 		if(this.inputEnabled&&!this.Tween.isRunning){
-			this.M.SE.play('OnStart',{volume:1});
+			this.M.SE.play('OnBtn',{volume:1});
 			this.M.G.playCount++;
 			var wp=this.add.sprite(0,0,'wp');
 			wp.tint=0x000000;
@@ -187,8 +233,8 @@ BasicGame.Play.prototype={
 	tweet:function(){
 		if(this.inputEnabled){
 			this.M.SE.play('OnBtn',{volume:1});
-			var e='3333333333333333333';
-			var res='oooooooooooooooooooooo';
+			var e=this.curResInfo.emoji;
+			var res=this.curWords.Res+': '+this.curRes+'.'+(this.curLang=='en'?this.curResInfo.name_en:this.curResInfo.name)+'\n';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
 			myGa('tweet','Play','Result_'+this.curRes,this.M.G.playCount);
@@ -196,7 +242,7 @@ BasicGame.Play.prototype={
 	},
 	back:function(){
 		if(this.inputEnabled&&!this.Tween.isRunning){
-			this.M.SE.play('Back',{volume:1});
+			this.M.SE.play('OnBtn',{volume:1});
 			var wp=this.add.sprite(0,0,'wp');
 			wp.tint=0x000000;
 			wp.alpha=0;
