@@ -219,64 +219,22 @@ BasicGame.Play.prototype={
 	},
 	////////////////////////////////////////////////////////////////////////////////////
 	genRes:function(){
-		var s=this.add.sprite(0,-this.world.height,'TWP');
+		var s=this.add.sprite(0,this.world.height,'twp');
 		s.tint=0x000000;
-		var tw=this.M.T.moveD(s,{xy:{y:0},delay:600});
+		var tw=this.M.T.moveD(s,{xy:{y:this.ShipS.bottom},delay:600});
 		tw.onComplete.add(function(){this.inputEnabled=!0},this);
-		tw.onComplete.add(function(){this.visible=!1},this.EndTS);
-		tw.onStart.add(function(){this.M.SE.play('Res',{volume:1})},this);
 		tw.start();
-		this.HUD.visible=!1;
 
-		var lbl;
-		var txtstyl=this.M.S.txtstyl(40);
-
-		txtstyl.fill=txtstyl.mStroke='#3cb371';
-		lbl=this.M.S.genTxt(this.world.centerX,this.world.height*.08,this.curWords.Result,txtstyl);
-		s.addChild(lbl);
-
-		txtstyl.fontSize=35;
-		txtstyl.fill=txtstyl.mStroke='#dc143c';
-		s.addChild(this.M.S.genTxt(this.world.centerX,this.world.height*.22,this.curWords.ResScore+this.M.H.formatComma(this.score),txtstyl));
-
-		var charS=this.add.sprite(this.world.centerX,this.world.height*.46,'Char_'+this.curChar);
-		charS.anchor.setTo(.5);
-		charS.width=charS.height=charS.width*.8;
-		s.addChild(charS);
-		s.addChild(this.M.S.genTxt(this.world.centerX,this.world.height*.65,this.curCharInfo.cName));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.07,this.curWords.Res,this.M.S.styl(40,'#3cb371')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.17,this.curRes+'.'+(this.curLang=='en'?this.curResInfo.name_en:this.curResInfo.name),this.M.S.styl(35,'#dc143c')));
 
 		var lX=this.world.width*.25,rX=this.world.width*.75;
-		txtstyl.fontSize=25;
-
-		txtstyl.fill=txtstyl.mStroke='#00fa9a';
-		lbl=this.M.S.genLbl(lX,this.world.height*.72,this.again,this.curWords.Again,txtstyl);
-		lbl.tint=0x00fa9a;
-		s.addChild(lbl);
-
-		txtstyl.fill=txtstyl.mStroke='#00a2f8';
-		lbl=this.M.S.genLbl(rX,this.world.height*.72,this.tweet,this.curWords.TwBtn,txtstyl);
-		lbl.tint=0x00a2f8;
-		s.addChild(lbl);
-
-		txtstyl.fill=txtstyl.mStroke='#8a2be2';
-		lbl=this.M.S.genLbl(lX,this.world.height*.82,this.back,this.curWords.Back,txtstyl);
-		lbl.tint=0x8a2be2;
-		s.addChild(lbl);
-
-		txtstyl.fill=txtstyl.mStroke='#ffa500';
-		lbl=this.M.S.genLbl(rX,this.world.height*.82,this.othergames,this.curWords.OtherGames,txtstyl);
-		lbl.tint=0xffa500;
-		s.addChild(lbl);
-
-		txtstyl.fill=txtstyl.mStroke='#00a2f8';
-		lbl=this.M.S.genLbl(lX,this.world.height*.92,this.tw,'Twitter',txtstyl);
-		lbl.tint=0x00a2f8;
-		s.addChild(lbl);
-
-		txtstyl.fill=txtstyl.mStroke='#ff0000';
-		lbl=this.M.S.genLbl(rX,this.world.height*.92,this.yt,'YouTube',txtstyl);
-		lbl.tint=0xff0000;
-		s.addChild(lbl);
+		s.addChild(this.M.S.lbl(lX,this.world.height*.28,this.again,this.curWords.Again,this.M.S.styl(25,'#ffd700'),0xffd700));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.28,this.tweet,this.curWords.TwBtn,this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.38,this.back,this.curWords.Back,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.38,this.othergames,this.curWords.OtherGames,this.M.S.styl(25,'#ffa500'),0xffa500));
+		s.addChild(this.M.S.lbl(lX,this.world.height*.48,this.tw,'Twitter',this.M.S.styl(25,'#00a2f8'),0x00a2f8));
+		s.addChild(this.M.S.lbl(rX,this.world.height*.48,this.yt,'YouTube',this.M.S.styl(25,'#ff0000'),0xff0000));
 	},
 	yt:function(){
 		if(this.inputEnabled){

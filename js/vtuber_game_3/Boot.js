@@ -3,7 +3,7 @@ BasicGame.Boot=function(){};
 BasicGame.Boot.prototype={
 	init:function(){this.M.BootInit(!1,{
 		GAME_TITLE:document.title,
-		GAME_TITLE_EN:'KMNZ-Pazzle',
+		GAME_TITLE_EN:'VTuber-Pazzle',
 		MAIN_COLOR:'#ffffff',
 		MAIN_TINT:0xffffff,
 		MAIN_TEXT_COLOR:'#000000',
