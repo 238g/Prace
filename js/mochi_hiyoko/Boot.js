@@ -48,7 +48,7 @@ BasicGame.Boot.prototype={
 		return {
 			jp:{
 				Start:'スタート',
-				KillCount:'倒した数',
+				KillCount:'ロリコンホイホイ',
 				GameOver:'終了！',
 				Res:'結果',
 				HowTo:'遊び方\n\nもちひよこを操作して\nモーニングスターをふりまわそう\n\n近づいてくるロリコンを\n叩いてホイホイしてね！\n\nかわいい壁紙に見とれて\nスコアを逃さぬように注意！\n目指せ高得点！',

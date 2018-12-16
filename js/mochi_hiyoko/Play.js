@@ -87,7 +87,7 @@ BasicGame.Play.prototype={
 		if(this.isPlaying){
 			n.sprite.kill();
 			this.killCount++;
-			this.KillCountTS.chT(this.curWords.KillCount+': '+this.killCount);
+			this.KillCountTS.chT(this.killCount+this.curWords.KillCount);
 			this.levelUp();
 			this.M.SE.play('attack'+this.rnd.between(1,3),{volume:1});
 		}
@@ -170,7 +170,7 @@ BasicGame.Play.prototype={
 	},
 	genHUD:function(){
 		this.HUD=this.add.group();
-		this.KillCountTS=this.M.S.txt(this.world.centerX,this.world.height*.96,this.curWords.KillCount+': '+this.killCount);
+		this.KillCountTS=this.M.S.txt(this.world.centerX,this.world.height*.96,this.killCount+this.curWords.KillCount);
 		this.LevelTS=this.M.S.txt(this.world.centerX,this.world.height*.06,'Level '+this.curLevel);
 		this.HPTS=this.M.S.txt(0,this.Player.height/2,'HP'+this.HP);
 		this.Player.addChild(this.HPTS);
@@ -219,8 +219,8 @@ BasicGame.Play.prototype={
 		tw.start();
 
 		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.2,this.curWords.Res,this.M.S.styl(40,'#3cb371')));
-		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.35,this.curWords.KillCount,this.M.S.styl(45,'#dc143c')));
-		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.5,this.killCount,this.M.S.styl(50,'#dc143c')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.38,this.killCount,this.M.S.styl(60,'#dc143c')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.5,this.curWords.KillCount,this.M.S.styl(45,'#dc143c')));
 
 		var lX=this.world.width*.25,rX=this.world.width*.75;
 		s.addChild(this.M.S.lbl(lX,this.world.height*.68,this.again,this.curWords.Again,this.M.S.styl(25,'#ffa500'),0xffd700));
@@ -248,7 +248,7 @@ BasicGame.Play.prototype={
 			this.M.SE.play('OnBtn',{volume:1});
 			var r=this.rnd.between(1,3);
 			var e=r==1?'🐣🐣🐣🐣🐣🐣':r==2?'🐤🐤🐤🐤🐤🐤':'🐥🐥🐥🐥🐥🐥';
-			var res=this.curWords.KillCount+': '+this.killCount+'\n'+'Level: '+this.curLevel+'\n';
+			var res=this.killCount+this.curWords.KillCount+'\n'+'Level: '+this.curLevel+'\n';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
 			myGa('tweet','Play','playCount_'+this.M.G.playCount,this.M.G.playCount);
