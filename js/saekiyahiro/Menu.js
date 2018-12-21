@@ -11,12 +11,11 @@ BasicGame.Title.prototype={
 	create:function(){
 		this.time.events.removeAll();
 		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		this.M.SE.playBGM('TitleBGM',{volume:1});
+		// this.M.SE.playBGM('TitleBGM',{volume:1});
 
-		this.genBg();
-		var title=this.add.sprite(this.world.width*.4,this.world.height*.1,'title');
-		title.anchor.setTo(.5);
-		this.M.T.beatA(title,{duration:500,start:!0});
+		// var title=this.add.sprite(this.world.width*.4,this.world.height*.1,'title');
+		// title.anchor.setTo(.5);
+		// this.M.T.beatA(title,{duration:500,start:!0});
 
 		var styl=this.M.S.styl(25);
 		this.M.S.lbl(this.world.width*.73,this.world.height*.9,this.start,this.curWords.Start,styl,0x00ff00);
@@ -25,22 +24,12 @@ BasicGame.Title.prototype={
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
 	},
-	genBg:function(){
-		var bgs=this.add.group();
-		for(var i=1;i<=19;i++){
-			var s=this.add.sprite(0,0,'bg'+i);
-			s.alpha=0;
-			bgs.add(s);
-		}
-		bgs.shuffle();
-		this.M.T.slideshow(bgs,{delay:3E3});
-	},
 	start:function(){
 		if (this.inputEnabled) {
 			if (!this.Tween.isRunning) {
 				this.inputEnabled=!1;
 				this.M.G.playCount++;
-				this.M.SE.play('OnBtn',{volume:1});
+				// this.M.SE.play('OnBtn',{volume:1});
 				var wp=this.add.sprite(0,0,'wp');
 				wp.width=this.world.width;
 				wp.height=this.world.height;
@@ -52,7 +41,7 @@ BasicGame.Title.prototype={
 				myGa('start','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 			}
 		} else {
-			this.M.SE.playBGM('TitleBGM',{volume:1});
+			// this.M.SE.playBGM('TitleBGM',{volume:1});
 			this.inputEnabled=!0;
 		}
 	},

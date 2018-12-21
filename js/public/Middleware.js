@@ -361,13 +361,19 @@ function changeTtl(t){
 	document.title=t;
 	document.getElementsByName('apple-mobile-web-app-title')[0].setAttribute('content',t);
 }
+function rndColor(){
+	var l='0123456789ABCDEF';
+	var c='#';
+	for(var i=0;i<6;i++)c+=l[Math.floor(Math.random()*16)];
+	return c;
+}
 if(__ENV!='prod'){
-function myGa(action,category,label,value){
-	console.log(action,category,label,value);
-	gtag('event',action,{'event_category':category,'event_label':label,'value':value});
-}
+	function myGa(action,category,label,value){
+		console.log(action,category,label,value);
+		gtag('event',action,{'event_category':category,'event_label':label,'value':value});
+	}
 }else{
-function myGa(action,category,label,value){
-	gtag('event',action,{'event_category':category,'event_label':label,'value':value});
-}
+	function myGa(action,category,label,value){
+		gtag('event',action,{'event_category':category,'event_label':label,'value':value});
+	}
 }
