@@ -23,7 +23,9 @@ BasicGame.Boot.prototype={
 	},
 	genLevelInfo:function(){
 		return {
-			1:{respawnTimer:4E3,},
+			// 1:{respawnTimer:54E3,},
+			1:{respawnTimer:5E3,},
+			// 1:{respawnTimer:500,},
 		};
 	},
 	genWords:function(){
@@ -69,10 +71,16 @@ BasicGame.Preloader.prototype={
 			'PubLogo':p+'images/public/logo/logo.png',
 			'wp':'images/icotsu/wp.jpg',
 			'twp':'images/icotsu/twp60.png',
-
-
-
-
+			'yahiro_1':'images/saekiyahiro/yahiro_1.png',
+			'yahiro_2':'images/saekiyahiro/yahiro_2.png',
+			'yahiro_3':'images/saekiyahiro/yahiro_3.png',
+			'yahiro_4':'images/saekiyahiro/yahiro_4.png',
+			'yahiro_5':'images/saekiyahiro/yahiro_5.png',
+			'road_1':'images/saekiyahiro/road_1.jpg',
+			'road_2':'images/saekiyahiro/road_2.jpg',
+			'road_3':'images/saekiyahiro/road_3.jpg',
+			'road_4':'images/saekiyahiro/road_4.jpg',
+			'road_5':'images/saekiyahiro/road_5.jpg',
 		};
 		for(var i=1;i<=19;i++)this.load.image('bg'+i,'images/mochi_hiyoko/bg/'+i+'.jpg');
 		for(var k in a)this.load.image(k,a[k]);

@@ -10,6 +10,14 @@ BasicGame.Play.prototype={
 		this.LevelInfo=this.M.G.LevelInfo;
 		this.curLevel=1;
 		this.curLevelInfo=this.LevelInfo[this.curLevel];
+		this.LaneInfo=[
+			[1,1,1,1,1,1],//0
+			[1,2,3,2,3,1],//1
+			[1,1,2,3,1,1],//2
+			[1,2,3,2,3,1],//3
+			[1,1,2,3,1,1],//4
+			[4,4,5,4,4,4],//5
+		];
 		// Val
 		this.respawnTimer=0;
 		this.activePanelCount=4;
@@ -17,12 +25,16 @@ BasicGame.Play.prototype={
 		this.viewLaneCount=5;
 		this.allLaneCount=6;
 		this.panelCentering=this.world.width*.1;
+		this.endY=this.moveDistance=0;
+		this.willDestroyPerson=!1;
+		this.canMovePanel=!0;
+		this.speed=2;
 
 		// Obj
 		this.People=[];
 		this.Panels=[];
 
-
+		this.Lanes=
 		null;
 		this.Tween={};
 	},
@@ -51,73 +63,133 @@ BasicGame.Play.prototype={
 			if(this.respawnTimer<0){
 				this.respawnTimer=this.curLevelInfo.respawnTimer;
 				this.respawn();
-				console.log(this.Panels);
 			}
 			for(var k in this.People){
 				var p=this.People[k];
-				p.y++;
-				switch(p.panelNum){
-					case 0:
-						if(this.Panels[1].startY<p.y&&!this.Tween.isRunning){
-							p.panelNum=1;
-							this.Panels[1].add(p);
-						}break;
-					case 1:
-						if(this.Panels[2].startY<p.y&&!this.Tween.isRunning){
-							p.panelNum=2;
-							this.Panels[2].add(p);
-						}break;
-					case 2:
-						if(this.Panels[3].startY<p.y&&!this.Tween.isRunning){
-							p.panelNum=3;
-							this.Panels[3].add(p);
-						}break;
-					case 3:
-						if(this.Panels[4].startY<p.y&&!this.Tween.isRunning){
-							p.panelNum=4;
-							this.Panels[4].add(p);
-						}break;
-					case 4:
-						if(this.Panels[5].startY<p.y&&!this.Tween.isRunning){
-							p.panelNum=5;
-							this.Panels[5].add(p);
-						}break;
-				}
-
+				this.movePerson(p,k);
 				//if py group but isntTween
+			}
+			if(this.willDestroyPerson){
+				this.willDestroyPerson=!1;
+				var tmp=[];
+				for(var k in this.People){
+					var p=this.People[k];
+					if(p.willDestroy){
+						p.destroy();
+					}else{
+						tmp.push(p);
+					}
+				}
+				this.People=tmp;
 			}
 		}
 	},
 	genContents:function(){
-		//0[]
-		//1[0,1,2,1,2,0]
-		//2[0,0,1,2,0,0]
-		//3[0,1,2,1,2,0]
-		//4[0,0,1,2,0,0]
-		//5[]
-
+		this.genPanel();
+		// this.genHUD();
+	},
+	genPanel:function(){
 		var my=this.world.height/this.allPanelCount;
 		var mx=this.world.width/this.viewLaneCount;
 		for(var i=0;i<this.allPanelCount;i++){
-			this.M.S.bmpSq(0,i*my,this.world.width,my,rndColor()).alpha=.5;
-			var g=this.add.group();
-			g.startY=i*my;
+			var pb=this.add.button(0,i*my,'',this.movePanel,this);
+			pb.panelNum=i;
+			pb.nowLR='left';
+			// this.M.S.bmpSq(0,i*my,this.world.width,my,rndColor()).alpha=.5;
+			var pg=this.add.group();
+			pg.startY=i*my;
+			pg.middleY=i*my+my/2;
+
+			var info=this.LaneInfo[i];
 			for(var j=0;j<this.allLaneCount;j++){
-				//TODO
-				
+				var s=this.add.sprite(mx*j,0,'road_'+info[j]);
+				// s.height=my;
+				pb.addChild(s);
 			}
-			this.Panels.push(g);
+			this.Panels.push(pg);
 		}
-
-
-
-		// this.genHUD();
+		for(var k in this.Panels)this.world.bringToTop(this.Panels[k]);
+		this.endY=this.world.height-my/2;
+		this.moveDistance=mx;
+	},
+	movePanel:function(b){
+		if(this.isPlaying&&b.panelNum!=0&&b.panelNum<=this.activePanelCount&&!this.Tween.isRunning){
+			var panel=this.Panels[b.panelNum];
+			this.canMovePanel=!0;
+			if(b.nowLR=='left'){
+				panel.forEach(function(c){if(c.laneNum==0)this.canMovePanel=!1;},this);
+				if(this.canMovePanel){
+					b.nowLR='right';
+					this.Tween=this.M.T.moveB(b,{xy:{x:'-'+this.moveDistance},duration:100,start:!0});
+					// b.x-=this.moveDistance;//TODO tween
+					panel.forEach(function(c){
+						this.M.T.moveB(c,{xy:{x:'-'+this.moveDistance},duration:100,start:!0});
+						// c.x-=this.moveDistance;//TODO tween
+						c.laneNum--;
+					},this);
+					this.LaneInfo[b.panelNum].shift();
+				}
+			}else{
+				panel.forEach(function(c){if(c.laneNum==this.viewLaneCount-1)this.canMovePanel=!1;},this);
+				if(this.canMovePanel){
+					b.nowLR='left';
+					// b.x+=this.moveDistance;//TODO tween
+					this.Tween=this.M.T.moveB(b,{xy:{x:'+'+this.moveDistance},duration:100,start:!0});
+					panel.forEach(function(c){
+						this.M.T.moveB(c,{xy:{x:'+'+this.moveDistance},duration:100,start:!0});
+						// c.x+=this.moveDistance;//TODO tween
+						c.laneNum++;
+					},this);
+					this.LaneInfo[b.panelNum].unshift(1);
+				}
+			}
+		}
+	},
+	movePerson:function(person,key){
+		var canMoveY=!0;
+		var nextPanelNum=person.panelNum+1;
+		if(nextPanelNum==this.allPanelCount){
+			if(person.y>this.endY){
+				canMoveY=!1;
+				// console.log(this.People);
+				person.willDestroy=!0;
+				this.willDestroyPerson=!0;
+			}
+		}else if(this.Panels[nextPanelNum].startY<person.y&&!this.Tween.isRunning){
+			person.panelNum=nextPanelNum;
+			this.Panels[nextPanelNum].add(person);
+			person.panelType=this.LaneInfo[nextPanelNum][person.laneNum];
+		}else if(person.panelType==2&&this.Panels[person.panelNum].middleY<=person.y){
+			canMoveY=!1;
+			person.x+=this.speed;
+			person.distanceX+=this.speed;
+			if(person.distanceX>this.moveDistance){
+				person.distanceX=0;
+				person.panelType=1;
+				person.laneNum++;
+			}
+		}else if(person.panelType==3&&this.Panels[person.panelNum].middleY<=person.y){
+			canMoveY=!1;
+			person.x-=this.speed;
+			person.distanceX+=this.speed;
+			if(person.distanceX>this.moveDistance){
+				person.distanceX=0;
+				person.panelType=1;
+				person.laneNum--;
+			}
+		}
+		if(canMoveY)person.y+=this.speed;
 	},
 	respawn:function(){
 		var r=this.rnd.between(1,this.viewLaneCount);
-		var p=this.add.sprite(this.panelCentering*(r*2-1),0,'TODO');
-		p.anchor.setTo(.5);
+		var p=this.add.sprite(this.panelCentering*(r*2-1),0,'yahiro_'+this.rnd.between(1,5));
+		p.anchor.setTo(.5,.8);
+		// p.anchor.setTo(.5);
+		p.distanceX=0;
 		p.panelNum=0;
+		p.laneNum=r-1;
+		p.panelType=1;
+		p.willDestroy=!1;
 		this.Panels[0].add(p);
 		this.People.push(p);
 	},
