@@ -10,7 +10,8 @@ BasicGame.Title.prototype={
 	},
 	create:function(){
 		this.time.events.removeAll();
-		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
+		this.stage.backgroundColor='#000';
+		// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		this.M.SE.playBGM('TitleBGM',{volume:1});
 
 		this.genBg();
