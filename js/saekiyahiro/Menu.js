@@ -11,25 +11,54 @@ BasicGame.Title.prototype={
 	create:function(){
 		this.time.events.removeAll();
 		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		// this.M.SE.playBGM('TitleBGM',{volume:1});
+		this.M.SE.playBGM('TitleBGM',{volume:1});
 
-		// var title=this.add.sprite(this.world.width*.4,this.world.height*.1,'title');
-		// title.anchor.setTo(.5);
-		// this.M.T.beatA(title,{duration:500,start:!0});
+		this.genBg();
+
+		var title=this.add.sprite(this.world.centerX,this.world.centerY,'title');
+		title.anchor.setTo(.5);
+		this.M.T.beatA(title,{duration:500,start:!0});
 
 		var styl=this.M.S.styl(25);
-		this.M.S.lbl(this.world.width*.73,this.world.height*.9,this.start,this.curWords.Start,styl,0x00ff00);
-		this.M.S.lbl(this.world.width*.27,this.world.height*.9,this.credit,'Credit',styl,0xffd700);
+		this.M.S.lbl(this.world.width*.73,this.world.height*.8,this.start,this.curWords.Start,styl);
+		this.M.S.lbl(this.world.width*.27,this.world.height*.8,this.credit,'Credit',styl);
 
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
+	},
+	genBg:function(){
+		var mx=this.world.width/5;
+		var my=this.world.height/6;
+		var road=[
+			[1,1,1,1,1],
+			[1,2,3,2,3],
+			[1,2,3,1,1],
+			[2,3,2,3,1],
+			[1,1,1,2,3],
+			[4,4,1,4,4],
+		];
+		for(var i=0;i<5;i++){
+			for(var j=0;j<6;j++){
+				this.add.sprite(i*mx,j*my,'road_'+road[j][i]);
+			}
+		}
+		var arr=[];
+		for(var i=1;i<=5;i++)arr.push('yahiro_'+i);
+		var e=this.add.emitter(this.world.centerX,0,100);
+		e.width=this.world.width;
+		e.makeParticles(arr);
+		e.setYSpeed(100,300);
+		e.setXSpeed(0,0);
+		e.minRotation=0;
+		e.maxRotation=0;
+		e.start(!1,5E3,this.time.physicsElapsedMS*10,0);
 	},
 	start:function(){
 		if (this.inputEnabled) {
 			if (!this.Tween.isRunning) {
 				this.inputEnabled=!1;
 				this.M.G.playCount++;
-				// this.M.SE.play('OnBtn',{volume:1});
+				this.M.SE.play('OnBtn',{volume:1});
 				var wp=this.add.sprite(0,0,'wp');
 				wp.width=this.world.width;
 				wp.height=this.world.height;
@@ -41,7 +70,7 @@ BasicGame.Title.prototype={
 				myGa('start','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 			}
 		} else {
-			// this.M.SE.playBGM('TitleBGM',{volume:1});
+			this.M.SE.playBGM('TitleBGM',{volume:1});
 			this.inputEnabled=!0;
 		}
 	},
@@ -54,7 +83,7 @@ BasicGame.Title.prototype={
 	},
 	genHUD:function(){
 		var y=this.world.height*.05;
-		this.M.S.vol(this.world.width*.8,y,0xff0000);
-		this.M.S.flsc(this.world.width*.9,y,0xff0000);
+		this.M.S.vol(this.world.width*.1,y,this.M.G.MAIN_TINT);
+		this.M.S.flsc(this.world.width*.9,y,this.M.G.MAIN_TINT);
 	},
 };
