@@ -1,53 +1,45 @@
 BasicGame.Title=function(){};
 BasicGame.Title.prototype={
 	init:function(){
-		this.inputEnabled=!1;
-		// this.curLang=this.M.gGlb('curLang');
-		// this.Words=this.M.gGlb('Words');
-		// this.curWords=this.Words[this.curLang];
+		this.isPlaying=this.inputEnabled=!1;
+		this.curLang=this.M.G.curLang;
+		this.Words=this.M.G.Words;
+		this.curWords=this.Words[this.curLang];
 		// Obj
 		this.Tween={};
 	},
 	create:function(){
-
-
-		console.log(3333333333);
-		return;
 		this.time.events.removeAll();
-		this.stage.backgroundColor=BasicGame.WHITE_COLOR;
+		this.stage.backgroundColor='#000';
+		// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		// this.M.SE.playBGM('TitleBGM',{volume:1});
-		
-		//TODO
-		// var title=this.add.sprite(this.world.centerX,this.world.height*.22,'Title');
+
+		// var title=this.add.sprite(this.world.centerX,this.world.centerY,'title');
 		// title.anchor.setTo(.5);
+		// this.M.T.beatA(title,{duration:500,start:!0});
 
-		// this.genEff();
+		var styl=this.M.S.styl(25);
+		this.M.S.lbl(this.world.width*.73,this.world.height*.8,this.start,this.curWords.Start,styl);
+		this.M.S.lbl(this.world.width*.27,this.world.height*.8,this.credit,'Credit',styl);
 
-		var txtstyl=this.M.S.txtstyl(25);
-		this.M.S.genLbl(this.world.centerX,this.world.height*.8,this.start,this.curWords.Start,txtstyl).tint=0x00ff00;
-		this.M.S.genLbl(this.world.width*.25,this.world.height*.95,this.credit,'Credit',txtstyl).tint=0xffd700;
-		this.M.S.genLbl(this.world.width*.75,this.world.height*.95,this.othergames,this.curWords.OtherGames,txtstyl).tint=0xffd700;
-		
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
-	},
-	genEff:function(){
-		var s=this.add.sprite(this.world.centerX,this.world.height*.52,'gacha_3');
-		s.anchor.setTo(.5);
-		s.scale.setTo(1.2);
-		this.M.T.stressA(s,{durations:[400,200],delay:500}).start();
 	},
 	start:function(){
 		if (this.inputEnabled) {
 			if (!this.Tween.isRunning) {
 				this.inputEnabled=!1;
+				this.M.G.playCount++;
 				// this.M.SE.play('OnBtn',{volume:1});
-				var wp=this.add.sprite(0,0,'WP');
+				var wp=this.add.sprite(0,0,'wp');
+				wp.width=this.world.width;
+				wp.height=this.world.height;
 				wp.tint=0x000000;
 				wp.alpha=0;
 				this.Tween=this.M.T.fadeInA(wp,{duration:800,alpha:1});
-				this.Tween.onComplete.add(function(){this.M.NextScene('SelectStage')},this);
+				this.Tween.onComplete.add(function(){this.M.NextScene('Play')},this);
 				this.Tween.start();
+				myGa('start','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 			}
 		} else {
 			// this.M.SE.playBGM('TitleBGM',{volume:1});
@@ -56,27 +48,67 @@ BasicGame.Title.prototype={
 	},
 	credit:function(){
 		this.M.SE.play('OnBtn',{volume:1});
-		var url='https://238g.github.io/Parace/238Games2.html?page=credit';
+		var url=__VTUBER_GAMES+'?page=credit';
+		if(this.curLang=='en')url+='&lang=en';
 		window.open(url,"_blank");
-		myGa('external_link','Title','Credit',this.M.gGlb('playCount'));
-	},
-	othergames:function(){
-		this.M.SE.play('OnBtn',{volume:1});
-		var url=__VTUBER_GAMES;
-		if(this.curLang=='en')url+='?lang=en';
-		window.open(url,"_blank");
-		myGa('othergames','Title','OtherGames',this.M.gGlb('playCount'));
+		myGa('external_link','Title','Credit',this.M.G.playCount);
 	},
 	genHUD:function(){
 		var y=this.world.height*.05;
-		this.M.S.genVolBtn(this.world.width*.1,y).tint=0x000000;
-		this.M.S.genFlScBtn(this.world.width*.9,y);
+		this.M.S.vol(this.world.width*.1,y,this.M.G.MAIN_TINT);
+		this.M.S.flsc(this.world.width*.9,y,this.M.G.MAIN_TINT);
 	},
 };
-////////////////////////////////////////////////////////////////////////////////////////////////////////
-BasicGame.SelectStage=function(){};
-BasicGame.SelectStage.prototype={
-	create:function(){
 
+BasicGame.SelectChar=function(){};
+BasicGame.SelectChar.prototype={
+	init:function(){
+		this.isPlaying=this.inputEnabled=!1;
+		this.curLang=this.M.G.curLang;
+		this.Words=this.M.G.Words;
+		this.curWords=this.Words[this.curLang];
+		this.CharInfo=this.M.G.CharInfo;
+		// Obj
+		this.Tween={};
+	},
+	create:function(){
+		this.time.events.removeAll();
+		// this.stage.backgroundColor='#000';
+
+		//TODO header text
+		//TODO back btn
+		// this.genPanel();
+	},
+	genPanel:function(){
+		//TODO-------------------------------------------------------
+		var arr=[];
+		for(var i=1;i<=Object.keys(this.CharInfo).length;i++)arr.push(i);
+		Phaser.ArrayUtils.shuffle(arr);
+		var rest,charNum,b,info,
+			sx=10,
+			sy=this.world.height*.25,
+			mx=this.world.width/3,
+			my=this.world.width*.3,
+			row=0,
+			count=0;
+
+		for(var k in arr){
+			charNum=arr[k];
+			rest=count%3;
+			info=this.CharInfo[charNum];
+			this.M.S.bmpSq(mx*rest+sx,my*row+sy,mx*rest,my*row,rndColor());
+
+			console.log(mx*rest+sx,my*row+sy,mx*rest,my*row,rndColor());
+
+
+
+			if(rest==3-1)row++;
+			if(row==3){
+				row=0;
+				sX+=this.world.width;
+			}
+			count++;
+		}
+		//TODO-------------------------------------------------------
 	},
 };
