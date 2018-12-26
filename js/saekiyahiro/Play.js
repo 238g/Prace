@@ -30,6 +30,7 @@ BasicGame.Play.prototype={
 		this.canMovePanel=!0;
 		this.HP=10;
 		this.score=0;
+		this.baseSpeed=.0625*(this.game.device.desktop?1:2);
 
 		// Obj
 		this.People=[];
@@ -151,7 +152,7 @@ BasicGame.Play.prototype={
 	movePerson:function(person,key){
 		var canMoveY=!0;
 		var nextPanelNum=person.panelNum+1;
-		var speed=this.curLevelInfo.speed*.0625*this.time.physicsElapsedMS;
+		var speed=this.curLevelInfo.speed*this.baseSpeed*this.time.physicsElapsedMS;
 		if(nextPanelNum==this.allPanelCount){
 			if(person.y>this.endY){
 				canMoveY=!1;
