@@ -10,8 +10,8 @@ BasicGame.Title.prototype={
 	},
 	create:function(){
 		this.time.events.removeAll();
-		this.stage.backgroundColor='#000';
-		// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
+		// this.stage.backgroundColor='#000';
+		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		// this.M.SE.playBGM('TitleBGM',{volume:1});
 
 		// var title=this.add.sprite(this.world.centerX,this.world.centerY,'title');
@@ -54,9 +54,10 @@ BasicGame.Title.prototype={
 		myGa('external_link','Title','Credit',this.M.G.playCount);
 	},
 	genHUD:function(){
-		var y=this.world.height*.05;
-		this.M.S.vol(this.world.width*.1,y,this.M.G.MAIN_TINT);
-		this.M.S.flsc(this.world.width*.9,y,this.M.G.MAIN_TINT);
+		var y=this.world.height*.1;
+		//TODO
+		this.M.S.vol(this.world.width*.1,y,0xff0000);
+		this.M.S.flsc(this.world.width*.9,y,0xff0000);
 	},
 };
 
@@ -77,7 +78,7 @@ BasicGame.SelectChar.prototype={
 
 		//TODO header text
 		//TODO back btn
-		// this.genPanel();
+		this.genPanel();
 	},
 	genPanel:function(){
 		//TODO-------------------------------------------------------
@@ -87,25 +88,21 @@ BasicGame.SelectChar.prototype={
 		var rest,charNum,b,info,
 			sx=10,
 			sy=this.world.height*.25,
-			mx=this.world.width/3,
-			my=this.world.width*.3,
+			mx=this.world.width/5,
+			my=this.world.width*.2,
 			row=0,
 			count=0;
 
 		for(var k in arr){
 			charNum=arr[k];
-			rest=count%3;
+			rest=count%5;
 			info=this.CharInfo[charNum];
-			this.M.S.bmpSq(mx*rest+sx,my*row+sy,mx*rest,my*row,rndColor());
+			this.M.S.bmpSq(mx*rest+sx,my*row+sy,100,100,rndColor());
 
-			console.log(mx*rest+sx,my*row+sy,mx*rest,my*row,rndColor());
-
-
-
-			if(rest==3-1)row++;
-			if(row==3){
+			if(rest==4)row++;
+			if(row==2){
 				row=0;
-				sX+=this.world.width;
+				sx+=this.world.width;
 			}
 			count++;
 		}

@@ -1,7 +1,7 @@
 BasicGame={};
 BasicGame.Boot=function(){};
 BasicGame.Boot.prototype={
-	init:function(){this.M.BootInit(!1,{
+	init:function(){this.M.BootInit(!0,{
 		GAME_TITLE:document.title,
 		GAME_TITLE_EN:'VTuber-Pazzle',
 		MAIN_COLOR:'#ffffff',
@@ -13,6 +13,9 @@ BasicGame.Boot.prototype={
 		// curLang:getQuery('lang')=='en'?'en':'jp',
 		endTut:!1,
 		curPuzzle:1,
+		curChar:1,
+		frameWidth:600,
+		frameHeight:300,
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
@@ -22,20 +25,29 @@ BasicGame.Boot.prototype={
 		this.M.NextScene('Preloader');
 	},
 	genPuzzleInfo:function(){
-		var mx=this.world.width*.2;
-		var frameWidth=this.world.width-mx;
-		console.log(frameWidth);//TODO ---------
 		return {
-			1:{size:frameWidth/3,},//colrow:3,
-			2:{size:frameWidth/4,},
-			3:{size:frameWidth/5,},
+			1:{size:this.M.G.frameHeight/3,col:6,row:3,},
+			2:{size:this.M.G.frameHeight/4,col:8,row:4,},
+			3:{size:this.M.G.frameHeight/5,col:10,row:5,},
 		};
 	},
 	genCharInfo:function(){
+		//tw,yt
 		return {
-			1:{},
-			2:{},
-			3:{},
+			1:{name:'',img:'todo_1',},
+			2:{name:'',img:'todo_1',},
+			3:{name:'',img:'todo_1',},
+			4:{name:'',img:'todo_1',},
+			5:{name:'',img:'todo_1',},
+			6:{name:'',img:'todo_1',},
+			7:{name:'',img:'todo_1',},
+			8:{name:'',img:'todo_1',},
+			9:{name:'',img:'todo_1',},
+			10:{name:'',img:'todo_1',},
+			11:{name:'',img:'todo_1',},
+			12:{name:'',img:'todo_1',},
+			13:{name:'',img:'todo_1',},
+			14:{name:'',img:'todo_1',},
 		};
 	},
 	genWords:function(){
@@ -45,18 +57,14 @@ BasicGame.Boot.prototype={
 			jp:{
 				Start:'スタート',
 				TimeA:'Time: ',
-				/*
-				GameOver:'終了！',
-				Res:'結果',
-				HowTo:'',
+				Clear:'クリア！',
 				Again:'もう一度！',
-				TwBtn:'結果をツイート',
 				Back:'もどる',
+				HowTo:'',
 				OtherGames:'他のゲーム',
+				TwBtn:'結果をツイート',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'',
-				ResScoreBack:'を送り出したよ！',
-				*/
 			},
 			en:{
 			},
@@ -80,8 +88,9 @@ BasicGame.Preloader.prototype={
 		this.load.atlasJSONHash('VolumeIcon',p+'images/public/VolumeIcon/VolumeIconW.png',p+'images/public/VolumeIcon/VolumeIconW.json');
 		var a={
 			'PubLogo':p+'images/public/logo/logo.png',
-			'wp':'images/icotsu/wp.jpg',
-			'twp':'images/icotsu/twp60.png',
+			'wp':'images/odanoharukasu/wp.jpg',
+			'twp':'images/odanoharukasu/twp70.png',
+
 
 		};
 		for(var k in a)this.load.image(k,a[k]);
@@ -90,7 +99,7 @@ BasicGame.Preloader.prototype={
 	},
 	loadPicture:function(){
 		var info=this.M.G.PuzzleInfo;
-		this.load.spritesheet('todo_1','../Parace/images/tiatia/Inu.png',info[1].size,info[1].size);
+		this.load.spritesheet('todo_1','images/vtuber_game_3/TEST.jpg',info[1].size,info[1].size);
 	},
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
