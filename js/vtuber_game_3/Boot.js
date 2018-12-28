@@ -34,7 +34,8 @@ BasicGame.Boot.prototype={
 	genCharInfo:function(){
 		//tw,yt
 		return {
-			1:{name:'',img:'todo_1',},
+			1:{name:'aaaaaa',img:'TEST',},
+			/*
 			2:{name:'',img:'todo_1',},
 			3:{name:'',img:'todo_1',},
 			4:{name:'',img:'todo_1',},
@@ -48,6 +49,7 @@ BasicGame.Boot.prototype={
 			12:{name:'',img:'todo_1',},
 			13:{name:'',img:'todo_1',},
 			14:{name:'',img:'todo_1',},
+			*/
 		};
 	},
 	genWords:function(){
@@ -57,14 +59,22 @@ BasicGame.Boot.prototype={
 			jp:{
 				Start:'スタート',
 				TimeA:'Time: ',
+				TimeB:'秒',
 				Clear:'クリア！',
 				Again:'もう一度！',
 				Back:'もどる',
-				HowTo:'',
+				HowTo:'遊び方\nピースを空白にスライドさせて\nパズルを完成させよう！\n何秒でクリアできるかな？',
 				OtherGames:'他のゲーム',
 				TwBtn:'結果をツイート',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'',
+				Piece:'ピース',
+				SelectedChar:'選んだVTuber: ',
+				ResTitle:'結果',
+				ChallengeBack:'に挑戦しました',
+				SelectChar:'VTuber選択',
+				SelectStage:'パズル選択',
+				GiveUp:'ギブアップ',
 			},
 			en:{
 			},
@@ -92,14 +102,21 @@ BasicGame.Preloader.prototype={
 			'twp':'images/odanoharukasu/twp70.png',
 
 
+			'blur':'images/vtuber_game_3/blur.jpg',
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadPicture();
 		this.loadAudio();
 	},
 	loadPicture:function(){
-		var info=this.M.G.PuzzleInfo;
-		this.load.spritesheet('todo_1','images/vtuber_game_3/TEST.jpg',info[1].size,info[1].size);
+		for(var k in this.M.G.PuzzleInfo){
+			var pi=this.M.G.PuzzleInfo[k];
+			for(var l in this.M.G.CharInfo){
+				var ci=this.M.G.CharInfo[l];
+				this.load.image(ci.img+'_full','images/vtuber_game_3/'+ci.img+'.jpg');
+				this.load.spritesheet(ci.img+'_'+k,'images/vtuber_game_3/'+ci.img+'.jpg',pi.size,pi.size);
+			}
+		}
 	},
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';

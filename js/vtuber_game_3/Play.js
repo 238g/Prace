@@ -17,7 +17,8 @@ BasicGame.Play.prototype={
 		this.tickTimer=2E3;
 		this.tickTime=0;
 		this.startFrameX=(this.world.width-this.M.G.frameWidth)/2;
-		this.startFrameY=(this.world.height-this.M.G.frameHeight)/2;
+		this.startFrameY=this.world.height*.05;
+		// this.startFrameY=(this.world.height-this.M.G.frameHeight)/2;
 
 		// Obj
 		this.PiecesGroup=
@@ -27,13 +28,11 @@ BasicGame.Play.prototype={
 	},
 	create:function(){
 		this.time.events.removeAll();
-		// this.stage.backgroundColor='#000';
-		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
+		this.stage.backgroundColor='#000';
+		// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		// this.M.SE.playBGM('PlayBGM',{volume:1});
 		this.genContents();
-		// this.M.G.endTut?this.genStart():this.genTut();
-		this.start();//TODO ---------
-		this.genStart();//TODO ---------
+		this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
 	},
 	start:function(){this.isPlaying=this.inputEnabled=!0},
@@ -51,27 +50,31 @@ BasicGame.Play.prototype={
 			if(this.tickTimer<0){
 				this.tickTimer=1E3;
 				this.tickTime++;
-				this.TimeTS.chT(this.curWords.TimeA+this.tickTime);
+				this.TimeTS.chT(this.genTimeText());
 			}
 		}
 	},
 	genContents:function(){
 		this.genPieces();
+		this.M.S.lbl(this.world.width*.15,this.world.height*.92,this.giveUp,this.curWords.GiveUp,this.M.S.styl(25,'#dc143c'),0xff4500);
 		this.genHUD();
 	},
+	giveUp:function(){
+		//TODO
+	},
 	genPieces:function(){
-		var size=this.curPuzzleInfo.size;
-		var piecesIndex=0;
-		var pieceAmount=this.curPuzzleInfo.col*this.curPuzzleInfo.row;
-		var shuffleArr=[];
+		var size=this.curPuzzleInfo.size,
+			piecesIndex=0,
+			pieceAmount=this.curPuzzleInfo.col*this.curPuzzleInfo.row,
+			shuffleArr=[],
+			img=this.curCharInfo.img+'_'+this.curPuzzle;
 		for(var i=0;i<pieceAmount;i++)shuffleArr.push(i);
-		//IF THIS COMMENT OUT ==== END
-		// Phaser.ArrayUtils.shuffle(shuffleArr);
+		// Phaser.ArrayUtils.shuffle(shuffleArr);//IF THIS COMMENT OUT ==== END
 		this.PiecesGroup=this.add.group();
 		for(var i=0;i<this.curPuzzleInfo.row;i++){
 			for(var j=0;j<this.curPuzzleInfo.col;j++){
 				if(shuffleArr[piecesIndex]){
-					piece=this.PiecesGroup.create(j*size+this.startFrameX,i*size+this.startFrameY,this.curCharInfo.img,shuffleArr[piecesIndex]);
+					piece=this.PiecesGroup.create(j*size+this.startFrameX,i*size+this.startFrameY,img,shuffleArr[piecesIndex]);
 					piece.inputEnabled=!0;
 					piece.events.onInputDown.add(this.selectPiece,this);
 				}else{
@@ -86,7 +89,7 @@ BasicGame.Play.prototype={
 				piecesIndex++;
 			}
 		}
-		this.LastPieceSp=this.add.sprite(this.startFrameX,this.startFrameY,this.curCharInfo.img,piecesIndex);
+		this.LastPieceSp=this.add.sprite(this.startFrameX,this.startFrameY,img,piecesIndex);
 		this.LastPieceSp.scale.setTo(3);
 		this.LastPieceSp.visible=!1;
 		this.PiecesGroup.add(this.LastPieceSp);
@@ -162,15 +165,18 @@ BasicGame.Play.prototype={
 	},
 	genHUD:function(){
 		this.HUD=this.add.group();
-		this.TimeTS=this.M.S.txt(this.world.centerX,this.world.height*.06,this.curWords.TimeA+this.tickTime);
+		this.TimeTS=this.M.S.txt(this.world.centerX,this.world.height*.9,this.genTimeText(),this.M.S.styl(30,'#00bfff'));
 		this.HUD.add(this.TimeTS);
 		this.HUD.visible=!1;
 		this.EndTS=this.M.S.txt(this.world.centerX,this.world.height*1.5,this.curWords.Clear,this.M.S.styl(60,'#dc143c'));
 	},
+	genTimeText:function(){
+		return this.curWords.TimeA+this.tickTime+this.curWords.TimeB;
+	},
 	genTut:function(){
 		this.HowToS=this.add.sprite(0,0,'twp');
 		this.HowToS.tint=0x000000;
-		this.HowToS.addChild(this.M.S.txt(this.world.centerX,this.world.centerY,this.curWords.HowTo,this.M.S.styl(30)));
+		this.HowToS.addChild(this.M.S.txt(this.world.centerX,this.world.centerY,this.curWords.HowTo,this.M.S.styl(40,'#3cb371')));
 		this.time.events.add(300,function(){
 			this.input.onDown.addOnce(function(){
 				this.M.G.endTut=!0;
@@ -201,14 +207,14 @@ BasicGame.Play.prototype={
 		var tw=this.M.T.moveD(s,{xy:{y:0},delay:600});
 		tw.onComplete.add(function(){
 			this.inputEnabled=!0;
+			this.HUD.visible=!1;
 			this.EndTS.visible=!1;
 		},this);
 		tw.start();
 
-		//TODO
-		// s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.2,this.curWords.Res,this.M.S.styl(45,'#3cb371')));
-		s.addChild(this.M.S.txt(this.world.width*.4,this.world.height*.45,33333333,this.M.S.styl(60,'#dc143c')));
-		// s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.58,this.curWords.ResScoreBack,this.M.S.styl(35,'#dc143c')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.08,this.curWords.ResTitle,this.M.S.styl(35,'#008000')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.28,this.curWords.SelectedChar+'\n'+this.curCharInfo.name,this.M.S.styl(30,'#ff1493')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.44,this.genTimeText(),this.M.S.styl(30,'#1e90ff')));
 
 		var lx=this.world.width*.25,rx=this.world.width*.75;
 		s.addChild(this.M.S.lbl(lx,this.world.height*.6,this.again,this.curWords.Again,this.M.S.styl(25,'#ffa500'),0xffd700));
@@ -233,9 +239,9 @@ BasicGame.Play.prototype={
 	},
 	tweet:function(){
 		if(this.inputEnabled){
-			this.M.SE.play('OnBtn',{volume:1});
-			var e=''
-			var res=3333333333333333333333333333333;
+			// this.M.SE.play('OnBtn',{volume:1});
+			var e='🎮🎮🎮🎮🎮🎮'
+			var res=this.curWords.SelectedChar+this.curCharInfo.name+'\n'+this.curPuzzleInfo.col+'x'+this.curPuzzleInfo.row+this.curWords.Piece+this.curWords.ChallengeBack+'\n'+this.genTimeText()+'\n';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
 			myGa('tweet','Play','Level_'+this.curLevel,this.M.G.playCount);
