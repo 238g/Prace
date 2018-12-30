@@ -18,19 +18,17 @@ BasicGame.Play.prototype={
 		this.tickTime=0;
 		this.startFrameX=(this.world.width-this.M.G.frameWidth)/2;
 		this.startFrameY=this.world.height*.05;
-		// this.startFrameY=(this.world.height-this.M.G.frameHeight)/2;
-
+		this.size=this.curPuzzleInfo.size+1;
 		// Obj
 		this.PiecesGroup=
-		this.HUD=this.TimeTS=
+		this.HUD=this.TimeTS=this.EndTS=this.HowToS=
 		null;
 		this.Tween={};
 	},
 	create:function(){
 		this.time.events.removeAll();
 		this.stage.backgroundColor='#000';
-		// this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		// this.M.SE.playBGM('PlayBGM',{volume:1});
+		this.M.SE.playBGM('PlayBGM',{volume:1});
 		this.genContents();
 		this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
@@ -41,7 +39,19 @@ BasicGame.Play.prototype={
 		if(__ENV!='prod'){
 			this.input.keyboard.addKey(Phaser.Keyboard.C).onDown.add(this.clear,this);
 			this.input.keyboard.addKey(Phaser.Keyboard.G).onDown.add(this.genRes,this);
-			// if(getQuery('level'))
+			if(getQuery('view')){
+				this.add.sprite(0,0,'wp');
+				var cn=getQuery('view');
+				var ci=this.CharInfo[cn];
+				var pi=this.PuzzleInfo[3];
+				var index=0;
+				for(var j=0;j<5;j++){
+					for(var i=0;i<10;i++){
+						this.add.sprite(10+i*(pi.size+1),10+j*(pi.size+1),cn+'_3',index);
+						index++;
+					}
+				}
+			}
 		}
 	},
 	update:function(){
@@ -55,30 +65,34 @@ BasicGame.Play.prototype={
 		}
 	},
 	genContents:function(){
+		this.genBg();
 		this.genPieces();
-		this.M.S.lbl(this.world.width*.15,this.world.height*.92,this.giveUp,this.curWords.GiveUp,this.M.S.styl(25,'#dc143c'),0xff4500);
 		this.genHUD();
+		this.genGivePanel();
 	},
-	giveUp:function(){
-		//TODO
+	genBg:function(){
+		var s=this.add.sprite(this.startFrameX-10,this.startFrameY-10,'wp');
+		s.width=this.size*this.curPuzzleInfo.col-1+20;
+		s.height=this.size*this.curPuzzleInfo.row-1+20;
+		s.alpha=0;
+		this.add.tween(s).to({alpha:1},3E3,null,!0,500,-1,!0);
 	},
 	genPieces:function(){
-		var size=this.curPuzzleInfo.size,
-			piecesIndex=0,
+		var piecesIndex=0,
 			pieceAmount=this.curPuzzleInfo.col*this.curPuzzleInfo.row,
 			shuffleArr=[],
-			img=this.curCharInfo.img+'_'+this.curPuzzle;
+			img=this.curChar+'_'+this.curPuzzle;
 		for(var i=0;i<pieceAmount;i++)shuffleArr.push(i);
-		// Phaser.ArrayUtils.shuffle(shuffleArr);//IF THIS COMMENT OUT ==== END
+		Phaser.ArrayUtils.shuffle(shuffleArr);//IF THIS COMMENT OUT ==== END
 		this.PiecesGroup=this.add.group();
 		for(var i=0;i<this.curPuzzleInfo.row;i++){
 			for(var j=0;j<this.curPuzzleInfo.col;j++){
 				if(shuffleArr[piecesIndex]){
-					piece=this.PiecesGroup.create(j*size+this.startFrameX,i*size+this.startFrameY,img,shuffleArr[piecesIndex]);
+					piece=this.PiecesGroup.create(j*this.size+this.startFrameX,i*this.size+this.startFrameY,img,shuffleArr[piecesIndex]);
 					piece.inputEnabled=!0;
 					piece.events.onInputDown.add(this.selectPiece,this);
 				}else{
-					piece=this.PiecesGroup.create(j*size+this.startFrameX,i*size+this.startFrameY);
+					piece=this.PiecesGroup.create(j*this.size+this.startFrameX,i*this.size+this.startFrameY);
 					piece.black=!0;
 				}
 				piece.name='piece'+i.toString()+'x'+j.toString();
@@ -119,13 +133,12 @@ BasicGame.Play.prototype={
 		return foundBlackElem;
 	},
 	movePiece:function(piece,blackPiece){
-		var size=this.curPuzzleInfo.size;
 		var tmpPiece={
 			posX:piece.posX,
 			posY:piece.posY,
 			curIndex:piece.curIndex,
 		};
-		this.add.tween(piece).to({x:blackPiece.posX*size+this.startFrameX,y:blackPiece.posY*size+this.startFrameY},100,Phaser.Easing.Linear.None,!0);
+		this.add.tween(piece).to({x:blackPiece.posX*this.size+this.startFrameX,y:blackPiece.posY*this.size+this.startFrameY},100,Phaser.Easing.Linear.None,!0);
 
 		piece.posX=blackPiece.posX;
 		piece.posY=blackPiece.posY;
@@ -136,6 +149,8 @@ BasicGame.Play.prototype={
 		blackPiece.posY=tmpPiece.posY;
 		blackPiece.curIndex=tmpPiece.curIndex;
 		blackPiece.name='piece'+blackPiece.posX.toString()+'x'+blackPiece.posY.toString();
+		
+		this.M.SE.play('slide',{volume:1});
 
 		this.checkIfFinished();
 	},
@@ -160,6 +175,7 @@ BasicGame.Play.prototype={
 		},this);
 		t.onComplete.add(function(){
 			this.camera.shake(.03,200,!0,Phaser.Camera.SHAKE_BOTH);
+			this.M.SE.play('match',{volume:1});
 			this.genEnd();
 		},this);
 	},
@@ -169,6 +185,39 @@ BasicGame.Play.prototype={
 		this.HUD.add(this.TimeTS);
 		this.HUD.visible=!1;
 		this.EndTS=this.M.S.txt(this.world.centerX,this.world.height*1.5,this.curWords.Clear,this.M.S.styl(60,'#dc143c'));
+	},
+	genGivePanel:function(){
+		this.M.S.lbl(this.world.width*.15,this.world.height*.92,this.showGiveUp,this.curWords.GiveUp,this.M.S.styl(25,'#dc143c'),0xff4500);
+		this.GivePanel=this.add.group();
+		var s=this.add.sprite(0,0,'wp');
+		s.tint=0x000000;
+		this.GivePanel.add(s);
+		var styl=this.M.S.styl(25);
+		this.GivePanel.add(this.M.S.txt(this.world.centerX,this.world.height*.3,this.curWords.GiveUpConfirm,styl));
+		this.GivePanel.add(this.M.S.lbl(this.world.width*.73,this.world.height*.8,this.giveUp,this.curWords.Yes,styl,0x00ff00));
+		this.GivePanel.add(this.M.S.lbl(this.world.width*.27,this.world.height*.8,this.cancel,this.curWords.No,styl,0xffd700));
+		this.GivePanel.visible=!1;
+	},
+	showGiveUp:function(){
+		if(this.isPlaying){
+			this.end();
+			this.GivePanel.visible=!0;
+			this.M.SE.play('OnBtn',{volume:1});
+		}
+	},
+	giveUp:function(){
+		this.M.SE.play('OnBtn',{volume:1});
+		var wp=this.add.sprite(0,0,'wp');
+		wp.tint=0x000000;
+		wp.alpha=0;
+		this.Tween=this.M.T.fadeInA(wp,{duration:600,alpha:1});
+		this.Tween.onComplete.add(function(){this.M.NextScene('Title')},this);
+		this.Tween.start();
+	},
+	cancel:function(){
+		this.start();
+		this.GivePanel.visible=!1;
+		this.M.SE.play('OnBtn',{volume:1});
 	},
 	genTimeText:function(){
 		return this.curWords.TimeA+this.tickTime+this.curWords.TimeB;
@@ -194,12 +243,12 @@ BasicGame.Play.prototype={
 		twA.onComplete.add(function(){this.destroy},s);
 		twA.onComplete.add(this.start,this);
 		this.HUD.visible=!0;
-		// this.M.SE.play('start',{volume:1});
+		this.M.SE.play('start',{volume:1});
 	},
 	genEnd:function(){
 		var tw=this.M.T.moveA(this.EndTS,{xy:{y:this.world.centerY},start:!0,delay:300});
 		tw.onComplete.add(this.genRes,this);
-		// this.M.SE.play('end',{volume:1});
+		tw.onStart.add(function(){this.M.SE.play('end',{volume:1});},this);
 	},
 	genRes:function(){
 		var s=this.add.sprite(0,this.world.height,'twp');
@@ -234,17 +283,17 @@ BasicGame.Play.prototype={
 			this.Tween=this.M.T.fadeInA(wp,{duration:600,alpha:1});
 			this.Tween.onComplete.add(function(){this.M.NextScene('Play')},this);
 			this.Tween.start();
-			myGa('again','Play','Level_'+this.curLevel,this.M.G.playCount);
+			myGa('again','Play','Char_'+this.M.G.curChar+';Puzzle_'+this.M.G.curPuzzle,this.M.G.playCount);
 		}
 	},
 	tweet:function(){
 		if(this.inputEnabled){
-			// this.M.SE.play('OnBtn',{volume:1});
+			this.M.SE.play('OnBtn',{volume:1});
 			var e='🎮🎮🎮🎮🎮🎮'
 			var res=this.curWords.SelectedChar+this.curCharInfo.name+'\n'+this.curPuzzleInfo.col+'x'+this.curPuzzleInfo.row+this.curWords.Piece+this.curWords.ChallengeBack+'\n'+this.genTimeText()+'\n';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
-			myGa('tweet','Play','Level_'+this.curLevel,this.M.G.playCount);
+			myGa('tweet','Play','Char_'+this.M.G.curChar+';Puzzle_'+this.M.G.curPuzzle,this.M.G.playCount);
 		}
 	},
 	back:function(){
@@ -264,23 +313,23 @@ BasicGame.Play.prototype={
 			var url=__VTUBER_GAMES;
 			if(this.curLang=='en')url+='?lang=en';
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('othergames','Play','Level_'+this.curLevel,this.M.G.playCount);
+			myGa('othergames','Play','Char_'+this.M.G.curChar+';Puzzle_'+this.M.G.curPuzzle,this.M.G.playCount);
 		}
 	},
 	tw:function(){
 		if(this.inputEnabled){
 			this.M.SE.play('OnBtn',{volume:1});
-			var url=this.M.G.tw;
+			var url=this.curCharInfo.tw;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('twitter','Play','Level_'+this.curLevel,this.M.G.playCount);
+			myGa('twitter','Play','Char_'+this.M.G.curChar+';Puzzle_'+this.M.G.curPuzzle,this.M.G.playCount);
 		}
 	},
 	yt:function(){
 		if(this.inputEnabled){
 			this.M.SE.play('OnBtn',{volume:1});
-			var url=this.M.G.yt;
+			var url=this.curCharInfo.yt;
 			this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-			myGa('youtube','Play','Level_'+this.curLevel,this.M.G.playCount);
+			myGa('youtube','Play','Char_'+this.M.G.curChar+';Puzzle_'+this.M.G.curPuzzle,this.M.G.playCount);
 		}
 	},
 };
