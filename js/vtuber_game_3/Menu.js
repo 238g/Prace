@@ -29,7 +29,7 @@ BasicGame.Title.prototype={
 	genBg:function(){
 		var arr=[];
 		for(var k in this.M.G.CharInfo)arr.push('char_'+k);
-		var e=this.add.emitter(this.world.width*.2,this.world.height*.1,100);
+		var e=this.add.emitter(this.world.width*.2,this.world.height*.1,arr.length*2);
 		e.makeParticles(arr);
 		e.start(!1,4E3,this.time.physicsElapsedMS*20,0);
 		this.add.tween(e).to({x:this.world.width*.8},3E3,null,!0,0,-1,!0);
