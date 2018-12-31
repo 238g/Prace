@@ -81,6 +81,7 @@ BasicGame.Title.prototype={
 				this.Tween=this.M.T.fadeInA(wp,{duration:800,alpha:1});
 				this.Tween.onComplete.add(function(){this.M.NextScene('Play')},this);
 				this.Tween.start();
+				myGa('start','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 			}
 		} else {
 			this.M.SE.playBGM('TitleBGM',{volume:1});
