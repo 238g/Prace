@@ -41,6 +41,7 @@ BasicGame.Play.prototype={
 		}
 	},
 	genContents:function(){
+		this.add.sprite(0,0,'bg');
 		this.Tamaki=this.add.sprite(this.world.centerX,this.world.height*.75,'tamaki');
 		this.Tamaki.anchor.setTo(.5);
 		this.Nobuhime=this.add.sprite(this.world.width*.8,this.world.height*.25,'nobuhime');

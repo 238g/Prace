@@ -27,7 +27,7 @@ BasicGame.Boot.prototype={
 			jp:{
 				Start:'スタート',
 				ScoreBack:'信たま',
-				HowTo:'遊び方\n\n',
+				HowTo:'遊び方\n\n犬山たまきの背中に織田信姫を落とせ！\n５回のチャレンジで\nどこまでスコアを伸ばせるか！？\n信たまてぇてぇ',
 				TwBtn:'結果をツイート',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
 				TwHT:'たまきゲーム',
@@ -68,6 +68,7 @@ BasicGame.Preloader.prototype={
 			'docking':'images/tamaki/docking.png',
 			'delight':'images/tamaki/delight.png',
 			'splash':'images/tamaki/splash.png',
+			'bg':'images/tamaki/bg.jpg',
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadAudio();
