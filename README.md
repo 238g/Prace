@@ -11,3 +11,4 @@
 |#44|モーニングスターもちひよこ|https://238g.github.io/Prace/mochi_hiyoko.html|2018/12/16|
 |#45|さえきやひろを送るゲーム|https://238g.github.io/Prace/saekiyahiro.html|2018/12/23|
 |#46|GOTTA煮VTスライドパズル|https://238g.github.io/Prace/vtuber_game_3.html|2018/12/30|
+|#47|信たまてぇてぇゲーム|https://238g.github.io/Prace/tamaki.html|2019/1/2|
