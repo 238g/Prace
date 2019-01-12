@@ -39,6 +39,8 @@ BasicGame.Boot.prototype={
 				HP:'HP: ',
 				Res:'参勤交代に\n参加した名取さなは',
 				TwResF:'参勤交代に参加した名取さなは',
+				Credit:'※名取さな様が配布している素材を使用させていただいております。',
+				Channel:'さなちゃんねる',
 			},
 			en:{
 			},

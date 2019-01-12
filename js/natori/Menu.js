@@ -20,7 +20,8 @@ BasicGame.Title.prototype={
 		this.M.T.stressA(title,{delay:800}).start();
 
 		var styl=this.M.S.styl(25);
-		this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.start,this.curWords.Start,styl,0x00ff00);
+		this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.yt,this.curWords.Channel,styl,0xffd700);
+		this.M.S.lbl(this.world.centerX,this.world.height*.75,this.start,this.curWords.Start,styl,0x00ff00);
 		this.M.S.lbl(this.world.width*.27,this.world.height*.85,this.credit,'Credit',styl,0xffd700);
 
 		this.genHUD();
@@ -46,6 +47,8 @@ BasicGame.Title.prototype={
 		this.time.events.add(500,function(){
 			this.add.tween(this.Stock).to({y:'+'+this.my},1e3,null,!0,0,-1);
 		},this);
+
+		this.M.S.txt(this.world.centerX,this.world.height*.95,this.curWords.Credit,this.M.S.stylS(15));
 	},
 	start:function(){
 		if (this.inputEnabled) {
@@ -74,6 +77,12 @@ BasicGame.Title.prototype={
 		if(this.curLang=='en')url+='&lang=en';
 		window.open(url,'_blank');
 		myGa('external_link','Title','Credit',this.M.G.playCount);
+	},
+	yt:function(){
+		this.M.SE.play('OnBtn',{volume:1});
+		var url=this.M.G.yt;
+		this.game.device.desktop?window.open(url,'_blank'):location.href=url;
+		myGa('youtube','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 	},
 	genHUD:function(){
 		var y=this.world.height*.1;
