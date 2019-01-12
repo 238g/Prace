@@ -37,11 +37,10 @@ BasicGame.Play.prototype={
 	},
 	create:function(){
 		this.time.events.removeAll();
-		// this.stage.backgroundColor='#000';
+		this.stage.backgroundColor='#000';
 
 		this.genContents();
-		// this.M.G.endTut?this.genStart():this.genTut();
-		this.genStart();//TODO del
+		this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
 	},
 	update:function(){
@@ -74,8 +73,12 @@ BasicGame.Play.prototype={
 	end:function(){this.isPlaying=this.inputEnabled=!1},
 	test:function(){
 		if(__ENV!='prod'){
-			// this.input.keyboard.addKey(Phaser.Keyboard.G).onDown.add(this.gameOver,this);
-			// if(getQuery('level'))
+			this.input.keyboard.addKey(Phaser.Keyboard.G).onDown.add(this.gameOver,this);
+			if(getQuery('level')){
+				this.curLevel=7;
+				this.curLevelInfo=this.LevelInfo[this.curLevel];
+				this.score=135;
+			}
 		}
 	},
 	genContents:function(){
@@ -125,6 +128,7 @@ BasicGame.Play.prototype={
 			tw.onComplete.add(this.miss,this);
 		}
 		b.inputEnabled=!1;
+		this.M.SE.play('stock',{volume:1});
 	},
 	addedStock:function(){
 		this.stockTmpCount=0;
@@ -143,6 +147,10 @@ BasicGame.Play.prototype={
 			this.curLevel++;
 			this.curLevelInfo=this.LevelInfo[this.curLevel];
 		}
+		if(this.score%10==0){
+			this.add.tween(this.ScoreTS.scale).to({x:2,y:2},300,null,!0,0,0,!0);
+			this.M.SE.play('score_ten',{volume:1});
+		}
 	},
 	miss:function(){
 		this.MissGrp.forEach(function(c){
@@ -150,6 +158,7 @@ BasicGame.Play.prototype={
 		});
 		this.camera.shake(.03,200,!0,Phaser.Camera.SHAKE_BOTH);
 		this.chHP(10);
+		this.M.SE.play('miss',{volume:1});
 	},
 	genHUD:function(){
 		this.HUD=this.add.group();
@@ -171,7 +180,6 @@ BasicGame.Play.prototype={
 	gameOver:function(){
 		if(this.isPlaying){
 			this.HPTS.chT(this.curWords.HP+0);
-			//TODO
 			this.genEnd();
 			this.end();
 		}
@@ -196,12 +204,29 @@ BasicGame.Play.prototype={
 		twA.onComplete.add(this.start,this);
 		twA.onComplete.add(function(){this.destroy},s);
 		this.HUD.visible=!0;
-		// this.time.events.add(500,function(){this.M.SE.play('start',{volume:1});},this);
+		this.M.SE.play('start',{volume:1});
+		this.playBGM();
+	},
+	playBGM:function(){
+		if(!this.M.SE.isPlaying('curBGM')||this.M.SE.isPlaying('TitleBGM')){
+			this.M.SE.stop('curBGM');
+			var bgm=this.M.SE.play('PlayBGM_'+this.M.G.curBGMNum,{volume:1,isBGM:!0});
+			bgm.onStop.add(this.loopBGM,this);
+		}
+	},
+	loopBGM:function(){
+		if(this.M.curScene=='Play'){
+			this.M.G.curBGMNum++;
+			if(this.M.G.curBGMNum==4)this.M.G.curBGMNum=1;
+			var bgm=this.M.SE.play('PlayBGM_'+this.M.G.curBGMNum,{volume:1,isBGM:!0});
+			bgm.onStop.add(this.loopBGM,this);
+		}
 	},
 	genEnd:function(){
-		var tw=this.M.T.moveX(this.EndTS,{xy:{x:this.world.centerX},start:!0,easing:Phaser.Easing.Exponential.Out});
+		this.EndTS.visible=!0;
+		var tw=this.M.T.moveX(this.EndTS,{xy:{y:this.world.centerY},start:!0,easing:Phaser.Easing.Exponential.Out});
 		tw.onComplete.add(this.genRes,this);
-		// this.M.SE.play('end',{volume:1});
+		this.M.SE.play('end',{volume:1});
 	},
 	genRes:function(){
 		var s=this.add.sprite(0,-this.world.height,'twp');
@@ -209,9 +234,11 @@ BasicGame.Play.prototype={
 		var tw=this.M.T.moveD(s,{xy:{y:0},delay:600,start:!0});
 		tw.onComplete.add(function(){
 			this.inputEnabled=!0;
+			this.HUD.visible=!1;
 		},this);
 
-		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.3,this.genScore(),this.M.S.styl(40,'#ff00ff')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.15,this.curWords.Res,this.M.S.styl(40,'#ff00ff')));
+		s.addChild(this.M.S.txt(this.world.centerX,this.world.height*.4,this.genScore(),this.M.S.styl(50,'#ff00ff')));
 
 		var lX=this.world.width*.25,rX=this.world.width*.75;
 		s.addChild(this.M.S.lbl(lX,this.world.height*.6,this.again,this.curWords.Again,this.M.S.styl(25,'#00fa9a'),0x00fa9a));
@@ -237,8 +264,8 @@ BasicGame.Play.prototype={
 	tweet:function(){
 		if(this.inputEnabled){
 			this.M.SE.play('OnBtn',{volume:1});
-			var e='🍁🍁🍁🍁🍁🍁';
-			var res=this.curWords.TwResF+'\n'+this.score+this.curWords.TwResB+'\n';
+			var e='🍆🍆🍆🍆🍆🍆';
+			var res=this.curWords.TwResF+this.genScore()+'\n';
 			var txt=e+'\n'+this.curWords.TwTtl+'\n'+res+e+'\n';
 			tweet(txt,this.curWords.TwHT,location.href);
 			myGa('tweet','Play','PlayCount_'+this.M.G.playCount,this.M.G.playCount);

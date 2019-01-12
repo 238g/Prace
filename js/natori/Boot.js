@@ -14,6 +14,7 @@ BasicGame.Boot.prototype={
 		// curLang:getQuery('lang')=='en'?'en':'jp',
 		yt:'https://www.youtube.com/channel/UCIdEIHpS0TdkqRkHL5OkLtA',
 		tw:'https://twitter.com/sana_natori',
+		curBGMNum:this.rnd.between(1,3),
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
@@ -21,25 +22,23 @@ BasicGame.Boot.prototype={
 		this.M.NextScene('Preloader');
 	},
 	genWords:function(){
-		////// var touchJP=this.M.G.TOUCH_WORD;
+		var touchJP=this.M.G.TOUCH_WORD;
 		////// var touchEN=this.M.G.TOUCH_WORD_EN;
 		return {
 			jp:{
 				Start:'スタート',
-				ScoreBack:'列',
-				HowTo:'遊び方\n\n',
+				ScoreBack:'人',
+				HowTo:'遊び方\n\n名取さなを\n参勤交代に参加させろ！\n流れてくる名取を\n'+touchJP+'して列に並ばせよう\nHPが0になったら終了！\nあなたは何人並ばせされるかな？',
 				TwBtn:'結果をツイート',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
-				TwHT:'',
+				TwHT:'さなゲーム',
 				Again:'もう一度！',
 				Back:'もどる',
 				OtherGames:'他のゲーム',
 				End:'終了！',
 				HP:'HP: ',
-				/*
-				TwResF:'',
-				TwResB:'',
-				*/
+				Res:'参勤交代に\n参加した名取さなは',
+				TwResF:'参勤交代に参加した名取さなは',
 			},
 			en:{
 			},
@@ -67,14 +66,7 @@ BasicGame.Preloader.prototype={
 			'twp':'images/icotsu/twp60.png',
 			'natori_1':'images/natori/natori_1.png',
 			'bg_1':'images/natori/bg_1.jpg',
-			/*
-			'ball_1':'images/matsuri_kzmy/ball_1.png',
-			'ball_2':'images/matsuri_kzmy/ball_2.png',
-			'bg_2':'images/matsuri_kzmy/bg_2.png',
-			'bg_3':'images/matsuri_kzmy/bg_3.jpg',
-			'burn':'images/matsuri_kzmy/burn.png',
-			'title':'images/matsuri_kzmy/title.png',
-			*/
+			'title':'images/natori/title.png',
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadAudio();
@@ -82,18 +74,16 @@ BasicGame.Preloader.prototype={
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
 		var s={
-			/*
-			TitleBGM:'sounds/matsuri_kzmy/harunoumi',
-			PlayBGM_1:'sounds/matsuri_kzmy/kabuki_dancing',
-			PlayBGM_2:'sounds/matsuri_kzmy/Neu_Kabuki',
-			OnBtn:p+'sounds/SE/LabJP/Performance/Japan/hyoushigi1',
-			odanobu_bomb:'sounds/matsuri_kzmy/odanobu_bomb',
-			start:p+'sounds/SE/LabJP/Performance/Japan/drum-japanese2',
-			hit_1:p+'sounds/SE/LabJP/Battle/Fight/kick-low1',
-			hit_2:p+'sounds/SE/LabJP/Battle/Fight/punch-middle2',
-			criticalhit:p+'sounds/SE/LabJP/Battle/Fight/punch-high2',
-			missswing:p+'sounds/SE/LabJP/Battle/Fight/punch-swing1',
-			*/
+			TitleBGM:p+'sounds/BGM/H/hiyokonokakekko',
+			PlayBGM_1:'sounds/natori/retropark',
+			PlayBGM_2:'sounds/natori/famipop',
+			PlayBGM_3:p+'sounds/BGM/P/picopicomarch',
+			stock:p+'sounds/SE/LabJP/Battle/Fight/punch-swing1',
+			miss:p+'sounds/SE/LabJP/Battle/Fight/highspeed-movement1',
+			end:p+'sounds/SE/LabJP/Life/Other/police-whistle2',
+			OnBtn:p+'sounds/SE/LabJP/Btn/decision3',
+			start:p+'sounds/SE/LabJP/Life/Other/police-whistle1',
+			score_ten:p+'sounds/SE/LabJP/Performance/Anime/shakin1',
 		};
 		for(var k in s){
 			var f=s[k];
