@@ -45,6 +45,7 @@ BasicGame.Play.prototype={
 			if(this.respawnTimer<0){
 				this.respawnTimer=this.curLevelInfo.respawnTimer;
 				for(var i=0;i<this.curLevelInfo.respawnCount;i++)this.respawnNme();
+				if(this.Player.x<=0||this.world.width<=this.Player.x||this.Player.y<=0||this.world.height<=this.Player.y)this.damage();
 			}
 		}
 	},
@@ -120,12 +121,15 @@ BasicGame.Play.prototype={
 	hitNme:function(p,n){
 		if(this.isPlaying){
 			n.sprite.kill();
+			this.damage();
+			this.M.SE.play('hitNme',{volume:1});
+		}
+	},
+	damage:function(){
 			this.camera.shake(.03,200,!0,Phaser.Camera.SHAKE_HORIZONTAL);
 			this.HP--;
 			this.HPTS.chT('HP'+this.HP);
-			this.M.SE.play('hitNme',{volume:1});
 			if(this.HP==0)this.gameOver();
-		}
 	},
 	gameOver:function(){
 		this.physics.p2.removeSpring(this.Player);
