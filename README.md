@@ -13,3 +13,4 @@
 |#46|GOTTA煮VTスライドパズル|https://238g.github.io/Prace/vtuber_game_3.html|2018/12/30|
 |#47|信たまてぇてぇゲーム|https://238g.github.io/Prace/tamaki.html|2019/1/2|
 |#48|ノーヴィラリー|https://238g.github.io/Prace/matsuri_kzmy.html|2019/1/4|
+|#49|名取さなの参勤交代|https://238g.github.io/Prace/natori.html|2019/1/12|
