@@ -12,8 +12,11 @@ BasicGame.Boot.prototype={
 		endTut:!1,
 		curLang:'jp',
 		// curLang:getQuery('lang')=='en'?'en':'jp',
-		yt:'',//TODO
-		tw:'',//TODO
+		yt:'https://www.youtube.com/channel/UCp6993wxpyDPHUpavwDFqgg',
+		tw:'https://twitter.com/tokino_sora',
+		itemCount:8,
+		ankimoCount:7,
+		curBGMNum:1,
 	})},
 	preload:function(){var p=(__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/')+'images/loading/loading.';this.load.atlasJSONHash('loading',p+'png',p+'json')},
 	create:function(){
@@ -26,17 +29,20 @@ BasicGame.Boot.prototype={
 		return {
 			jp:{
 				Start:'スタート',
-				ScoreBack:'xxxxxx',
-				HowTo:'遊び方\n\n',
+				ScoreFront:'スコア: ',
+				HP:'HP: ',
+				HowTo:'遊び方\n'+touchJP+'して上から落ちてくる\n"良いもの"をザシュッと刺そう！\nあん肝を刺すと回復するよ\n目指せ高得点！',
+				Good:'良いもの',
+				Bad:'悪いもの',
 				TwBtn:'結果をツイート',
 				TwTtl:'『'+this.M.G.GAME_TITLE+'』で遊んだよ！',
-				TwHT:'eeeeeeeee',
+				TwHT:'そらゲーム',
 				Again:'もう一度！',
 				Back:'もどる',
 				OtherGames:'他のゲーム',
 				End:'終了！',
-				Res:'ddddddddddddd',
-				TwResF:'ffffffffffffffff',
+				Res:'結果',
+				TwResB:'今日もザシュッといってらっしゃい！',
 			},
 			en:{
 			},
@@ -62,31 +68,31 @@ BasicGame.Preloader.prototype={
 			'PubLogo':p+'images/public/logo/logo.png',
 			'wp':'images/icotsu/wp.jpg',
 			'twp':'images/icotsu/twp60.png',
-
-			/*
-			'natori_1':'images/natori/natori_1.png',
-			'bg_1':'images/natori/bg_1.jpg',
-			'title':'images/natori/title.png',
-			*/
+			'sora1':'images/tokino_sora/sora1.png',
+			'sora2':'images/tokino_sora/sora2.png',
+			'sora3':'images/tokino_sora/sora3.png',
+			'fire':'images/tokino_sora/fire.png',
 		};
 		for(var k in a)this.load.image(k,a[k]);
+		this.loadItems();
+		this.loadAnkimo();
 		this.loadAudio();
 	},
+	loadItems:function(){for(var i=1;i<=this.M.G.itemCount;i++)this.load.image('item'+i,'images/tokino_sora/item'+i+'.png');},
+	loadAnkimo:function(){for(var i=1;i<=this.M.G.ankimoCount;i++)this.load.image('ankimo'+i,'images/tokino_sora/ankimo'+i+'.png');},
 	loadAudio:function(){
 		var p=__ENV!='prod'?'../Parace/':'https://238g.github.io/Parace/';
 		var s={
-			/*
-			TitleBGM:p+'sounds/BGM/H/hiyokonokakekko',
-			PlayBGM_1:'sounds/natori/retropark',
-			PlayBGM_2:'sounds/natori/famipop',
-			PlayBGM_3:p+'sounds/BGM/P/picopicomarch',
-			stock:p+'sounds/SE/LabJP/Battle/Fight/punch-swing1',
-			miss:p+'sounds/SE/LabJP/Battle/Fight/highspeed-movement1',
-			end:p+'sounds/SE/LabJP/Life/Other/police-whistle2',
-			OnBtn:p+'sounds/SE/LabJP/Btn/decision3',
+			OnBtn:p+'sounds/SE/LabJP/Btn/decision5',
+			fire:p+'sounds/SE/LabJP/Btn/decision18',
+			miss:p+'sounds/SE/LabJP/Btn/decision19',
 			start:p+'sounds/SE/LabJP/Life/Other/police-whistle1',
-			score_ten:p+'sounds/SE/LabJP/Performance/Anime/shakin1',
-			*/
+			end:p+'sounds/SE/LabJP/Life/Other/police-whistle2',
+			TitleBGM:p+'sounds/BGM/P/PerituneMaterial_Snowy_Day2',
+			PlayBGM_1:p+'sounds/BGM/RainbowRush_loop',
+			PlayBGM_2:p+'sounds/BGM/ANewDay',
+			PlayBGM_3:p+'sounds/BGM/MitoDanceRevolution/plankton',
+			scoreEff:p+'sounds/SE/LabJP/Performance/Anime/shakin1',
 		};
 		for(var k in s){
 			var f=s[k];

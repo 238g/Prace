@@ -11,7 +11,7 @@ BasicGame.Title.prototype={
 	create:function(){
 		this.time.events.removeAll();
 		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
-		// this.M.SE.playBGM('TitleBGM',{volume:1});
+		this.M.SE.playBGM('TitleBGM',{volume:1});
 
 		// this.genBg();
 
@@ -20,35 +20,14 @@ BasicGame.Title.prototype={
 		// this.M.T.stressA(title,{delay:800}).start();
 
 		var styl=this.M.S.styl(25);
-		// this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.yt,this.curWords.Channel,styl,0xffd700);
-		this.M.S.lbl(this.world.centerX,this.world.height*.75,this.start,this.curWords.Start,styl,0x00ff00);
+		this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.start,this.curWords.Start,styl,0x00ff00);
 		this.M.S.lbl(this.world.width*.27,this.world.height*.85,this.credit,'Credit',styl,0xffd700);
+		this.M.S.txt(this.world.centerX,this.world.height*.95,'MMD: (c) Tokino Sora Ch.',styl);
 
 		this.genHUD();
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
 	},
 	genBg:function(){
-		this.add.sprite(0,0,'bg_1');
-
-		this.Stock=this.add.group();
-		var s,i,sy=this.world.height*1.3;
-		this.my=this.world.height*.08;
-		for(i=0;i<20;i++){
-			s=this.add.sprite(this.world.centerX,sy-this.my*i,'natori_1');
-			s.anchor.setTo(.5);
-			this.Stock.addAt(s,0);
-			s=this.add.sprite(this.world.width*.25,sy-this.my*i,'natori_1');
-			s.anchor.setTo(.5);
-			this.Stock.addAt(s,0);
-			s=this.add.sprite(this.world.width*.75,sy-this.my*i,'natori_1');
-			s.anchor.setTo(.5);
-			this.Stock.addAt(s,0);
-		}
-		this.time.events.add(500,function(){
-			this.add.tween(this.Stock).to({y:'+'+this.my},1e3,null,!0,0,-1);
-		},this);
-
-		this.M.S.txt(this.world.centerX,this.world.height*.95,this.curWords.Credit,this.M.S.stylS(15));
 	},
 	start:function(){
 		if (this.inputEnabled) {
@@ -86,7 +65,7 @@ BasicGame.Title.prototype={
 	},
 	genHUD:function(){
 		var y=this.world.height*.1;
-		this.M.S.vol(this.world.width*.1,y,0xff00ff);
-		this.M.S.flsc(this.world.width*.9,y,0xff00ff);
+		this.M.S.vol(this.world.width*.1,y,this.M.G.MAIN_TINT);
+		this.M.S.flsc(this.world.width*.9,y,this.M.G.MAIN_TINT);
 	},
 };
