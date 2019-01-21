@@ -13,11 +13,11 @@ BasicGame.Title.prototype={
 		this.stage.backgroundColor=this.M.G.WHITE_COLOR;
 		this.M.SE.playBGM('TitleBGM',{volume:1});
 
-		// this.genBg();
+		this.genBg();
 
-		// var title=this.add.sprite(this.world.centerX,this.world.height*.3,'title');
-		// title.anchor.setTo(.5);
-		// this.M.T.stressA(title,{delay:800}).start();
+		var title=this.add.sprite(this.world.centerX,this.world.height*.1,'title');
+		title.anchor.setTo(.5);
+		this.M.T.stressA(title,{delay:800}).start();
 
 		var styl=this.M.S.styl(25);
 		this.M.S.lbl(this.world.width*.73,this.world.height*.85,this.start,this.curWords.Start,styl,0x00ff00);
@@ -28,6 +28,7 @@ BasicGame.Title.prototype={
 		this.time.events.add(500,function(){this.inputEnabled=!0},this);
 	},
 	genBg:function(){
+		this.add.sprite(0,0,'titlebg_'+this.rnd.between(1,4));
 	},
 	start:function(){
 		if (this.inputEnabled) {
@@ -56,12 +57,6 @@ BasicGame.Title.prototype={
 		if(this.curLang=='en')url+='&lang=en';
 		window.open(url,'_blank');
 		myGa('external_link','Title','Credit',this.M.G.playCount);
-	},
-	yt:function(){
-		this.M.SE.play('OnBtn',{volume:1});
-		var url=this.M.G.yt;
-		this.game.device.desktop?window.open(url,'_blank'):location.href=url;
-		myGa('youtube','Title','PlayCount_'+this.M.G.playCount,this.M.G.playCount);
 	},
 	genHUD:function(){
 		var y=this.world.height*.1;

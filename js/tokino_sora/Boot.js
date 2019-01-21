@@ -73,6 +73,12 @@ BasicGame.Preloader.prototype={
 			'sora3':'images/tokino_sora/sora3.png',
 			'fire':'images/tokino_sora/fire.png',
 			'wc':p+'images/HoneyStrap/WhiteCircle.png',
+			'titlebg_1':'images/tokino_sora/titlebg_1.png',
+			'titlebg_2':'images/tokino_sora/titlebg_2.png',
+			'titlebg_3':'images/tokino_sora/titlebg_3.png',
+			'titlebg_4':'images/tokino_sora/titlebg_4.png',
+			'title':'images/tokino_sora/title.png',
+			'playbg':'images/tokino_sora/playbg.jpg',
 		};
 		for(var k in a)this.load.image(k,a[k]);
 		this.loadItems();

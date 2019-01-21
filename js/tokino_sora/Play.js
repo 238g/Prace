@@ -33,6 +33,7 @@ BasicGame.Play.prototype={
 		this.fired=!1;
 		this.missedCount=0;
 		this.scoreEffNum=100000;
+		this.usuallyRotation=1;
 
 		// Obj
 		this.SoraS=this.FireS=this.Items=this.Ankimo=this.HitEff=
@@ -56,6 +57,7 @@ BasicGame.Play.prototype={
 			}
 			this.Items.forEachAlive(function(c){
 				c.y+=this.baseSpeed*this.time.physicsElapsedMS*c.vel;
+				c.angle+=this.usuallyRotation*c.angleDirection;
 				if(c.y>this.world.height){
 					c.kill();
 					this.chHP(-1);
@@ -67,7 +69,10 @@ BasicGame.Play.prototype={
 				this.respawnAnkimoTimer=this.curLevelInfo.respawnAnkimoTimer;
 				this.respawnAnkimo();
 			}
-			this.Ankimo.forEachAlive(function(c){c.y+=this.baseSpeed*this.time.physicsElapsedMS*c.vel;},this);
+			this.Ankimo.forEachAlive(function(c){
+				c.y+=this.baseSpeed*this.time.physicsElapsedMS*c.vel;
+				c.angle+=this.usuallyRotation*c.angleDirection;
+			},this);
 		}
 	},
 	start:function(){this.isPlaying=this.inputEnabled=!0},
@@ -98,7 +103,7 @@ BasicGame.Play.prototype={
 		}
 	},
 	genBg:function(){
-		//TODO bg
+		this.add.sprite(0,0,'playbg');
 		this.M.S.bmpSq(0,this.liney-this.fireRangeY,this.world.width,this.fireRangeY,'#ff0000').alpha=.1;
 		this.M.S.bmpSq(0,this.liney,this.world.width,this.fireRangeY,'#00ff00').alpha=.1;
 	},
@@ -156,11 +161,12 @@ BasicGame.Play.prototype={
 			this.M.T.moveA(this.FireS,{xy:{x:this.world.width*.95},duration:500,start:!0});
 			this.time.events.add(800,this.replay,this);
 			this.baseSpeed*=.1;
+			this.usuallyRotation*=.1;
 			this.Items.forEachAlive(function(c){
 				if(c.y<this.liney+this.fireRangeY&&this.liney-this.fireRangeY<c.y){
-					var s=this.fireRangeY*1.5-Math.abs(c.y-this.liney);
 					if(c.itemNum<=4){
-						var addScore=Math.floor(s*s*this.curLevel);
+						var lineScore=this.fireRangeY*1.5-Math.abs(c.y-this.liney);
+						var addScore=Math.floor(lineScore*lineScore*this.curLevel);
 						this.score+=addScore;
 						this.ScoreTS.chT(this.genScore());
 						this.scoreEff(addScore);
@@ -180,6 +186,11 @@ BasicGame.Play.prototype={
 			},this);
 			this.Ankimo.forEachAlive(function(c){
 				if(c.y<this.liney+this.fireRangeY&&this.liney-this.fireRangeY<c.y){
+					var lineScore=this.fireRangeY*1.5-Math.abs(c.y-this.liney);
+					var addScore=Math.floor(lineScore*lineScore*this.curLevel);
+					this.score+=addScore;
+					this.ScoreTS.chT(this.genScore());
+					this.scoreEff(addScore);
 					this.chHP(10);
 					this.fired=!0;
 					this.hit(c);
@@ -211,6 +222,7 @@ BasicGame.Play.prototype={
 			this.FireS.x=this.FireS.basex;
 			this.isFiring=!1;
 			this.baseSpeed*=10;
+			this.usuallyRotation*=10;
 			this.time.events.add(200,this.start,this);
 			this.fired=!1;
 		}
@@ -232,7 +244,10 @@ BasicGame.Play.prototype={
 		var s=this.rnd.pick(this.Items.children.filter(function(c){return!c.alive}));
 		if(s){
 			s.alpha=1;
+			s.angleDirection=this.rnd.between(1,2)==1?1:-1;
+			s.angle=this.rnd.angle();
 			s.reset(this.world.randomX*.4+this.world.centerX,0);
+			s.scale.setTo(this.rnd.between(7,10)/10);
 			s.vel=this.rnd.between(this.curLevelInfo.vel-10,this.curLevelInfo.vel+10)/100;
 		}
 	},
@@ -240,6 +255,8 @@ BasicGame.Play.prototype={
 		var s=this.rnd.pick(this.Ankimo.children.filter(function(c){return!c.alive}));
 		if(s){
 			s.alpha=1;
+			s.angleDirection=this.rnd.between(1,2)==1?1:-1;
+			s.angle=this.rnd.angle();
 			s.reset(this.world.randomX*.4+this.world.centerX,0);
 			s.vel=this.rnd.between(this.curLevelInfo.vel-10,this.curLevelInfo.vel+10)/100;
 		}
