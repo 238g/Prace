@@ -26,7 +26,7 @@ BasicGame.Play.prototype={
 		this.liney=this.world.height*.63;
 		this.respawnTimer=200;
 		this.isFiring=!1;
-		this.baseSpeed=1;
+		this.baseSpeed=this.game.device.desktop?.8:1;
 		this.fireRangeY=this.world.height*.15;
 		this.killCount=0;
 		this.respawnAnkimoTimer=5E3;
@@ -35,7 +35,7 @@ BasicGame.Play.prototype={
 		this.scoreEffNum=100000;
 
 		// Obj
-		this.SoraS=this.FireS=this.Items=this.Ankimo=
+		this.SoraS=this.FireS=this.Items=this.Ankimo=this.HitEff=
 		this.HowToS=this.HUD=this.EndTS=this.ScoreTS=this.HPTS=
 		null;
 		this.Tween={};
@@ -43,7 +43,6 @@ BasicGame.Play.prototype={
 	create:function(){
 		this.time.events.removeAll();
 		// this.stage.backgroundColor='#000';
-
 		this.genContents();
 		this.M.G.endTut?this.genStart():this.genTut();
 		this.test();
@@ -76,21 +75,32 @@ BasicGame.Play.prototype={
 	test:function(){
 		if(__ENV!='prod'){
 			this.input.keyboard.addKey(Phaser.Keyboard.G).onDown.add(this.gameOver,this);
-			if(getQuery('level')){
-				this.curLevel=getQuery('level');
-				this.curLevelInfo=this.LevelInfo[this.curLevel];
-			}
 			// this.respawnAnkimoTimer=this.curLevelInfo.respawnAnkimoTimer=1e3;
 		}
 	},
 	genContents:function(){
-		this.M.S.bmpSq(0,this.liney-this.fireRangeY,this.world.width,this.fireRangeY,'#ff0000').alpha=.1;
-		this.M.S.bmpSq(0,this.liney,this.world.width,this.fireRangeY,'#00ff00').alpha=.1;
+		this.hiddenLevel();
+		this.genBg();
 		this.genFire();
+		this.genSora();
+		this.genEff();
 		this.genItems();
 		this.genAnkimo();
-		this.genSora();
 		this.genHUD();
+	},
+	hiddenLevel:function(){
+		var level=Number(getQuery('level'));
+		if(level){
+			if(level>9)level=9;
+			if(level<1)level=1;
+			this.curLevel=level;
+			this.curLevelInfo=this.LevelInfo[this.curLevel];
+		}
+	},
+	genBg:function(){
+		//TODO bg
+		this.M.S.bmpSq(0,this.liney-this.fireRangeY,this.world.width,this.fireRangeY,'#ff0000').alpha=.1;
+		this.M.S.bmpSq(0,this.liney,this.world.width,this.fireRangeY,'#00ff00').alpha=.1;
 	},
 	genFire:function(){
 		this.FireS=this.add.sprite(this.world.width*.3,this.liney,'fire');
@@ -101,6 +111,16 @@ BasicGame.Play.prototype={
 	genSora:function(){
 		this.SoraS=this.add.sprite(0,this.world.height,'sora1');
 		this.SoraS.anchor.setTo(0,1);
+	},
+	genEff:function(){
+		this.HitEff=this.add.emitter(0,0,120);
+		this.HitEff.makeParticles('wc');
+		this.HitEff.setScale(1,.3,1,.3,800);
+		this.HitEff.setAlpha(.8,0,800);
+		this.HitEff.setXSpeed(-200,200);
+		this.HitEff.setYSpeed(-200,200);
+		this.HitEff.gravity.x=0;
+		this.HitEff.gravity.y=0;
 	},
 	genItems:function(){
 		var arr=[];
@@ -153,7 +173,7 @@ BasicGame.Play.prototype={
 					}else{
 						this.chHP(-10);
 					}
-					this.time.events.add(600,function(){this.kill();},c);
+					this.hit(c);
 				}else{
 					this.missedCount++;
 				}
@@ -162,7 +182,7 @@ BasicGame.Play.prototype={
 				if(c.y<this.liney+this.fireRangeY&&this.liney-this.fireRangeY<c.y){
 					this.chHP(10);
 					this.fired=!0;
-					this.time.events.add(600,function(){this.kill();},c);
+					this.hit(c);
 				}
 			},this);
 			if(this.fired){
@@ -174,6 +194,13 @@ BasicGame.Play.prototype={
 				if(this.missedCount>0)this.chHP(-5);
 			}
 		}
+	},
+	hit:function(c){
+		var tw=this.add.tween(c).to({alpha:0},600,null,!0);
+		tw.onComplete.add(function(c){c.kill()});
+		this.HitEff.x=c.x;
+		this.HitEff.y=c.y;
+		this.HitEff.explode(800,Math.floor(320/this.time.physicsElapsedMS));
 	},
 	replay:function(){
 		if(this.HP<=0)return this.gameOver();
@@ -204,6 +231,7 @@ BasicGame.Play.prototype={
 	respawnCore:function(){
 		var s=this.rnd.pick(this.Items.children.filter(function(c){return!c.alive}));
 		if(s){
+			s.alpha=1;
 			s.reset(this.world.randomX*.4+this.world.centerX,0);
 			s.vel=this.rnd.between(this.curLevelInfo.vel-10,this.curLevelInfo.vel+10)/100;
 		}
@@ -211,6 +239,7 @@ BasicGame.Play.prototype={
 	respawnAnkimo:function(){
 		var s=this.rnd.pick(this.Ankimo.children.filter(function(c){return!c.alive}));
 		if(s){
+			s.alpha=1;
 			s.reset(this.world.randomX*.4+this.world.centerX,0);
 			s.vel=this.rnd.between(this.curLevelInfo.vel-10,this.curLevelInfo.vel+10)/100;
 		}
