@@ -14,3 +14,4 @@
 |#47|信たまてぇてぇゲーム|https://238g.github.io/Prace/tamaki.html|2019/1/2|
 |#48|ノーヴィラリー|https://238g.github.io/Prace/matsuri_kzmy.html|2019/1/4|
 |#49|名取さなの参勤交代|https://238g.github.io/Prace/natori.html|2019/1/12|
+|#50|ときのそらのザシュッとな！|https://238g.github.io/Prace/tokino_sora.html|2019/1/21|
